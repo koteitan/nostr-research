@@ -5,6 +5,8 @@ npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk にこの実装�
 # Boot strap リレー
 nostr が購読するリレーの決め方は、kind:10002 を使うもの、outbox モデルなど、さまざまがあり、それらの情報の多くはリレーのメタデータに含まれています。そのためには一度どこかのリレーに接続してメタデータを取得する必要があります。各クライアントがどのように Boot strap リレーを決定しているかを調査しました。
 
+*最終更新: 2025-12-21*
+
 | クライアント | Bootstrap リレー | 地域対応 |
 |-------------|-----------------|---------|
 | nostter | relay.nostr.band, nos.lol, relay.damus.io | 日本語設定時に日本リレー追加 (relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, nrelay-jp.c-stellar.net) |
@@ -19,6 +21,8 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 # リレー
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
+
+*最終更新: 2025-12-21*
 
 | クライアント | リレー取得方法 | 詳細 |
 |-------------|---------------|------|
@@ -35,17 +39,36 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 # リアクションの取得方法
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
 
-| クライアント | 取得方法 | バッチ処理 | フィルター |
-|-------------|---------|-----------|-----------|
-| nostter | 通知ストリームの一部として取得 | なし (ストリーム購読) | kinds: [7] (notificationsFilterKinds に含む) |
-| Rabbit | バッチ取得 (useBatchedEvents) | interval: 2000ms, batchSize: 150 | kinds: [7], #e タグでイベント指定 |
-| Lumilumi | ページネーション付きバッチ取得 | limit: 500 | kinds: [1, 42, 6, 7, 9735, 1111], #e/#a/#q タグ |
-| Yakihonne | バッチ取得 (useNoteStats) | 5種類のクエリを1リクエストに | kinds: [7, 6, 1, 1, 9735]、WoT スコアでフィルタリング、Dexie キャッシュ |
-| iris | イベント毎に購読 | closeOnEose: true (NDK) | kinds: [7], #e タグ、著者 pubkey で重複排除 |
-| Primal | キャッシュサーバーから事前集計 | サーバー側で集計済み | postStats オブジェクトで likes, reposts, replies, zaps を取得 |
-| Coracle | 通知として取得 | conservative pulling (since フィルター使用)、pubkey 50件/300ms | reactionKinds, #p タグ |
-| Amethyst | NIP-25 実装 (quartz ライブラリ) | - | ReactionEvent.kt で kind:7 処理 |
-| Damus | nostrdb 経由 | - | NIP-25 対応、nostrdb でイベント保存・検索 |
+*最終更新: 2025-12-21*
+
+| クライアント | 取得タイミング | 収集方法 |
+|-------------|---------------|---------|
+| nostter | ノート詳細ページ表示時 (タイムラインでは非表示) | 詳細ページを開いた時に購読開始 |
+| Rabbit | タイムライン表示時 | バッチ取得 (2秒間隔、最大150件) |
+| Lumilumi | タイムライン表示時 | ページネーション付きバッチ取得 (500件ずつ) |
+| Yakihonne | タイムライン表示時 | バッチ取得 + Dexie キャッシュ、WoT スコアでフィルタリング |
+| iris | ノート表示時 | イベント毎に購読 (closeOnEose) |
+| Primal | タイムライン表示時 | キャッシュサーバーから事前集計済みデータを取得 |
+| Coracle | 要調査 | 要調査 |
+| Amethyst | 要調査 | 要調査 |
+| Damus | 要調査 | 要調査 |
+
+# フレームワーク
+各クライアントの実装に使用されているフレームワーク・ライブラリを調査しました。
+
+*最終更新: 2025-12-21*
+
+| クライアント | 言語 | UI | nostr アクセス | その他ライブラリ |
+|-------------|------|-----|---------------|-----------------|
+| nostter | TypeScript | Svelte + SvelteKit | rx-nostr, nostr-tools, @rust-nostr/nostr-sdk | rxjs, Melt UI, svelte-i18n |
+| Rabbit | TypeScript | SolidJS | nostr-tools, nostr-wasm | @tanstack/solid-query, TailwindCSS, i18next, zod |
+| Lumilumi | TypeScript | Svelte 5 + SvelteKit | rx-nostr, nostr-tools, @konemono/nostr-login | TanStack Query, Leaflet, markdown-it, Melt UI |
+| Yakihonne | JavaScript | React + Next.js | NDK, nostr-tools | Redux Toolkit, Dexie, i18next, react-markdown |
+| iris | TypeScript | React + Tauri | nostr-tools, nostr-social-graph, nostr-wasm | Zustand, Dexie, DaisyUI, Leaflet |
+| Primal | TypeScript | SolidJS | nostr-tools | Tiptap, Milkdown, HLS.js, @cashu/cashu-ts |
+| Coracle | TypeScript | Svelte | @welshman/*, nostr-tools | TailwindCSS, Capacitor, Bitcoin Connect, Fuse.js |
+| Amethyst | Kotlin | Jetpack Compose | quartz (自社ライブラリ) | OkHttp, Coil, Media3, secp256k1-kmp |
+| Damus | Swift + C | SwiftUI | nostrdb (自社ライブラリ) | Flatbuffers, Lightning Network統合 |
 
 # 調査済みクライアント一覧
 - web:
