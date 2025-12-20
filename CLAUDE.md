@@ -12,3 +12,5 @@ Nostr client research is the repository for researching how nostr clients are im
 - git add/commit/push when I say do so.
 - don't git add -A.
 - don't git reset/checkout/rebase/restore.
+- don't git add and commit at once.
+
