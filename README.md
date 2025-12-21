@@ -21,7 +21,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | Primal | キャッシュサーバー経由 (cache.primal.net) | ユーザーはキャッシュインスタンスを選択可能 |
 | Coracle | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | |
 | noStrudel | relay.primal.net, relay.damus.io, nos.lol | |
-| Amethyst | nos.lol, nostr.mom, nostr.bitcoiner.social | |
+| Amethyst | relay.nostr.band, relay.damus.io, relay.primal.net, nostr.mom, nos.lol, nostr.bitcoiner.social, nostr.oxtr.dev | bootstrapInbox (7リレー) |
 | Damus | relay.damus.io, nostr.land, nostr.wine, nos.lol | デバイスロケールで地域リレー追加 (日本: wirednet.jp, yabu.me, kojira.io / タイ: siamstr.com / ドイツ: einundzwanzig.space) |
 | algia | relay.nostr.band | |
 | kakoi | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
@@ -69,7 +69,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | Primal | キャッシュサーバー経由 |
 | Coracle | relay.nostr.band, nostr.wine, search.nos.today |
 | noStrudel | relay.nostr.band, search.nos.today, relay.noswhere.com, filter.nostr.wine |
-| Amethyst | nostr.band, nos.today |
+| Amethyst | relay.nostr.band, nostr.wine, relay.noswhere.com, search.nos.today |
 | Damus | フルテキスト検索なし (ハッシュタグ・ユーザーのみ) |
 | algia | relay.nostr.band (search フラグ) |
 | kakoi | なし |
