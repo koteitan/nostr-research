@@ -2,28 +2,28 @@
 クライアントの実装の違いを研究するためのリポジトリです。
 npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk にこの実装の違いをレポートしてほしいと連絡を頂けると調査して掲載します。PR で追加してくれるのも歓迎です。
 
-# Boot strap リレー
+# Bootstrap リレー
 nostr が購読するリレーの決め方は、kind:10002 を使うもの、outbox モデルなど、さまざまがあり、それらの情報の多くはリレーのメタデータに含まれています。そのためには一度どこかのリレーに接続してメタデータを取得する必要があります。各クライアントがどのように Boot strap リレーを決定しているかを調査しました。
 
 *最終更新: 2025-12-21*
 
-| クライアント | Bootstrap リレー | 地域対応 |
-|-------------|-----------------|---------|
+| クライアント | Bootstrap リレー | 備考 |
+|-------------|-----------------|------|
 | nostter | relay.nostr.band, nos.lol, relay.damus.io | 日本語設定時に日本リレー追加 (relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, nrelay-jp.c-stellar.net) |
 | Rabbit | relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp | ブラウザ言語が日本語の場合に日本リレー追加 (relay-jp.nostr.wirednet.jp, holybea.com, r.kojira.io, yabu.me) |
-| Lumilumi | relay.nostr.band, nos.lol, nostr.bitcoiner.social | なし |
-| Nos Haiku | nrelay.c-stellar.net, nostream.ocha.one, nostr.compile-error.net | なし |
-| ぬるぬる | yabu.me | なし |
-| 野雨 | relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, relay.barine.co | なし |
-| flowgazer | r.kojira.io | なし |
-| Yakihonne | nostr-01.yakihonne.com, nostr-02.yakihonne.com, relay.damus.io, relay.nostr.band, relay.nsec.app, monitorlizard.nostr1.com | 自社リレーを優先 |
-| iris | temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, nos.lol | 自社リレー (iris.to) を優先 |
+| Lumilumi | relay.nostr.band, nos.lol, nostr.bitcoiner.social | |
+| Nos Haiku | nrelay.c-stellar.net, nostream.ocha.one, nostr.compile-error.net | |
+| ぬるぬる | yabu.me | |
+| 野雨 | relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, relay.barine.co | |
+| flowgazer | r.kojira.io | |
+| Yakihonne | nostr-01.yakihonne.com, nostr-02.yakihonne.com, relay.damus.io, relay.nostr.band, relay.nsec.app, monitorlizard.nostr1.com | |
+| iris | temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, nos.lol | |
 | Primal | キャッシュサーバー経由 (cache.primal.net) | ユーザーはキャッシュインスタンスを選択可能 |
-| Coracle | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | なし |
-| Amethyst | nos.lol, nostr.mom, nostr.bitcoiner.social | なし |
+| Coracle | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | |
+| Amethyst | nos.lol, nostr.mom, nostr.bitcoiner.social | |
 | Damus | relay.damus.io, nostr.land, nostr.wine, nos.lol | デバイスロケールで地域リレー追加 (日本: wirednet.jp, yabu.me, kojira.io / タイ: siamstr.com / ドイツ: einundzwanzig.space) |
-| algia | relay.nostr.band | なし |
-| nokakoi | yabu.me, r.kojira.io, bostr.nokotaro.com | なし |
+| algia | relay.nostr.band | |
+| nokakoi | yabu.me, r.kojira.io, bostr.nokotaro.com | |
 
 # リレー
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
@@ -32,19 +32,19 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 | クライアント | リレー取得方法 | 詳細 |
 |-------------|---------------|------|
-| nostter | NIP-65 (kind:10002) | rx-nostr 使用、リレーリストイベント受信時に updateRelays() で更新 |
-| Rabbit | 設定から取得 | config().relayUrls を使用、全リレーに同時クエリ |
-| Lumilumi | NIP-65 (kind:10002) または設定から取得 | ローカル設定優先、なければ NIP-65、最後にデフォルトリレー |
-| Nos Haiku | NIP-65 (kind:10002) | rx-nostr 使用、インデクサーリレーから inbox リレー取得 |
-| ぬるぬる | 設定から取得 | localStorage に保存、単一リレーアーキテクチャ |
-| 野雨 | 設定から取得 | localStorage に保存、デフォルトリレーにフォールバック |
-| flowgazer | 設定から取得 | localStorage に保存、単一リレーアーキテクチャ |
-| Yakihonne | Outbox モデル (NIP-65) | enableOutboxModel: true、addExplicitRelays() で動的追加 |
-| iris | Outbox モデル (NIP-65) | ユーザーリレー設定 + WebRTC P2P トランスポート対応 |
-| Primal | 読み取り: キャッシュサーバー経由、書き込み: NIP-65 (kind:10002) | サーバー選択可能、ユーザーのリレー設定は kind:10002 で管理 |
-| Coracle | NIP-65 (kind:10002) | Negentropy 対応、リレー品質スコアリング、複数カテゴリのリレー管理 |
-| Amethyst | NIP-65 (kind:10002) | 用途別リレーセット (NIP-65リスト、DM、検索、インデクサー、ブロック) |
-| Damus | NIP-65 (kind:10002) + kind:3 フォールバック | NIP-65 → kind:3 → UserDefaults → Bootstrap リレーの順で取得 |
+| nostter   | kind:10002 (NIP-65) |  |
+| Rabbit    | 設定→localStorage |
+| Lumilumi  | kind:10002 (NIP-65) または設定から取得 | ローカル設定優先、なければ NIP-65、最後にbootstrap リレー |
+| Nos Haiku | kind:10002 (NIP-65) |  |
+| ぬるぬる  | 設定→localStorage | 単一リレー |
+| 野雨      | 設定→localStorage | bootstrap リレーにフォールバック |
+| flowgazer | 設定→localStorage |単一リレー |
+| Yakihonne | Outboxモデル (NIP-65) | outbox 無効時は bootstrap リレーにフォールバック |
+| iris | Outboxモデル (NIP-65) |  |
+| Primal | 読み取り: キャッシュサーバー経由、書き込み: kind:10002 (NIP-65) | サーバー選択可能、ユーザーのリレー設定は kind:10002 で管理 |
+| Coracle | kind:10002 (NIP-65) | Negentropy 対応、リレー品質スコアリング、複数カテゴリのリレー管理 |
+| Amethyst | kind:10002 (NIP-65) | 用途別リレーセット (kind:10002、DM、検索、インデクサー、ブロック) |
+| Damus | kind:10002 (NIP-65) | kind:10002 → kind:3 → UserDefaults → Bootstrap リレーの順で取得 |
 | algia | 設定から取得 | ~/.config/algia/config.json、read/write/search/DM フラグ対応 |
 | nokakoi | 設定から取得 | GUI 設定、起動時に自動接続 |
 
@@ -55,19 +55,19 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 | クライアント | 検索リレー |
 |-------------|-----------|
-| nostter | 要調査 |
-| Rabbit | 要調査 |
+| nostter | relay.nostr.band, search.nos.today |
+| Rabbit | relay.nostr.band, search.nos.today |
 | Lumilumi | directory.yabu.me, purplepag.es |
 | Nos Haiku | directory.yabu.me, purplepag.es, user.kindpag.es, indexer.coracle.social |
 | ぬるぬる | search.nos.today |
 | 野雨 | なし |
 | flowgazer | なし |
-| Yakihonne | 要調査 |
-| iris | 要調査 |
+| Yakihonne | search.nos.today, relay.nostr.band, relay.ditto.pub, nostr.polyserv.xyz |
+| iris | ローカル検索 (キャッシュから検索) |
 | Primal | キャッシュサーバー経由 |
-| Coracle | 要調査 |
+| Coracle | relay.nostr.band, nostr.wine, search.nos.today |
 | Amethyst | nostr.band, nos.today |
-| Damus | 要調査 |
+| Damus | フルテキスト検索なし (ハッシュタグ・ユーザーのみ) |
 | algia | relay.nostr.band (search フラグ) |
 | nokakoi | なし |
 
@@ -76,23 +76,23 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 *最終更新: 2025-12-21*
 
-| クライアント | タイムラインに表示 | 収集方法 |
-|-------------|------------------|---------|
-| nostter | | 詳細ページを開いた時に購読開始 |
-| Rabbit | ✔ | バッチ取得 (2秒間隔、最大150件) |
-| Lumilumi | ✔ | ページネーション付きバッチ取得 (500件ずつ) |
-| Nos Haiku | | fetchNext で購読開始、inbox リレーから取得 |
-| ぬるぬる | ✔ | バッチ取得 (limit: 500) |
-| 野雨 | | リアクション取得なし（送信のみ） |
-| flowgazer | ✔ | 自分の投稿へのリアクションを取得 |
-| Yakihonne | ✔ | バッチ取得 + Dexie キャッシュ、WoT スコアでフィルタリング |
-| iris | | イベント毎に購読 (closeOnEose) |
-| Primal | ✔ | キャッシュサーバーから事前集計済みデータを取得 |
-| Coracle | ✔ | コンテキストイベントから kind:7 をフィルタリング |
-| Amethyst | ✔ | バッチ取得 + リアルタイム購読、リレーごとにノートIDを集約 |
-| Damus | ✔ | 通知フィルターで kind:7 取得、LikeCounter で重複排除 |
-| algia | | リアクション取得なし（送信のみ） |
-| nokakoi | ✔ | タイムライン購読で kind:1,7 を同時取得 |
+| クライアント | 収集方法 |
+|-------------|---------|
+| nostter | 詳細ページを開いた時に購読開始 |
+| Rabbit | バッチ取得 (2秒間隔、最大150件) |
+| Lumilumi | 投稿ごとに購読 |
+| Nos Haiku | バッチ取得 (1秒間隔でマージ) |
+| ぬるぬる | バッチ取得 (limit: 500) |
+| 野雨 | リアクション取得なし（送信のみ） |
+| flowgazer | 自分の投稿へのリアクションを取得 |
+| Yakihonne | バッチ取得 + Dexie キャッシュ、WoT スコアでフィルタリング |
+| iris | イベント毎に購読 (closeOnEose) |
+| Primal | キャッシュサーバーから事前集計済みデータを取得 |
+| Coracle | コンテキストイベントから kind:7 をフィルタリング |
+| Amethyst | バッチ取得 + リアルタイム購読、リレーごとにノートIDを集約 |
+| Damus | 通知フィルターで kind:7 取得、LikeCounter で重複排除 |
+| algia | リアクション取得なし（送信のみ） |
+| nokakoi | タイムライン購読で kind:1,7 を同時取得 |
 
 # フレームワーク
 各クライアントの実装に使用されているフレームワーク・ライブラリを調査しました。
@@ -125,7 +125,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
   - [Nos Haiku](https://nos-haiku.vercel.app/)
   - [ぬるぬる](https://www.nullnull.app/)
   - [野雨](https://invertedtriangle358.github.io/Nosame/)
-  - [flowgazer](https://ompomz.github.io/note)
+  - [flowgazer](https://ompomz.github.io/flowgazer/)
   - [Yakihonne](https://yakihonne.com/)
   - [iris](https://iris.to/)
   - [Primal](https://primal.net/)
