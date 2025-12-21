@@ -1,6 +1,6 @@
 # Nostr Client Research
 クライアントの実装の違いを研究するためのリポジトリです。
-npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk にこの実装の違いをレポートしてほしいと連絡を頂けると調査して掲載します。PR で追加してくれるのも歓迎です。
+npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk か [github issue](https://github.com/koteitan/nostr-client-research/issues) に「この実装の違いをレポートしてほしい」と連絡を頂けると調査して掲載します。クライアントの提案もOK。PR で追加してくれるのも歓迎です。
 
 # Bootstrap リレー
 nostr が購読するリレーの決め方は、kind:10002 を使うもの、outbox モデルなど、さまざまがあり、それらの情報の多くはリレーのメタデータに含まれています。そのためには一度どこかのリレーに接続してメタデータを取得する必要があります。各クライアントがどのように Boot strap リレーを決定しているかを調査しました。
@@ -11,8 +11,8 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 |-------------|-----------------|------|
 | nostter | relay.nostr.band, nos.lol, relay.damus.io | 日本語設定時に日本リレー追加 (relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, nrelay-jp.c-stellar.net) |
 | Rabbit | relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp | ブラウザ言語が日本語の場合に日本リレー追加 (relay-jp.nostr.wirednet.jp, holybea.com, r.kojira.io, yabu.me) |
-| Lumilumi | relay.nostr.band, nos.lol, nostr.bitcoiner.social | |
-| Nos Haiku | nrelay.c-stellar.net, nostream.ocha.one, nostr.compile-error.net | |
+| Lumilumi | directory.yabu.me, purplepag.es, relay.nostr.band, indexer.coracle.social | フォールバック: relay.nostr.band, nos.lol, nostr.bitcoiner.social |
+| Nos Haiku | directory.yabu.me, purplepag.es, user.kindpag.es, indexer.coracle.social | |
 | ぬるぬる | yabu.me | |
 | 野雨 | relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, relay.barine.co | |
 | flowgazer | r.kojira.io | |
@@ -20,10 +20,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | iris | temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, nos.lol | |
 | Primal | キャッシュサーバー経由 (cache.primal.net) | ユーザーはキャッシュインスタンスを選択可能 |
 | Coracle | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | |
+| noStrudel | relay.primal.net, relay.damus.io, nos.lol | |
 | Amethyst | nos.lol, nostr.mom, nostr.bitcoiner.social | |
 | Damus | relay.damus.io, nostr.land, nostr.wine, nos.lol | デバイスロケールで地域リレー追加 (日本: wirednet.jp, yabu.me, kojira.io / タイ: siamstr.com / ドイツ: einundzwanzig.space) |
 | algia | relay.nostr.band | |
-| nokakoi | yabu.me, r.kojira.io, bostr.nokotaro.com | |
+| kakoi | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
 
 # リレー
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
@@ -35,7 +36,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | nostter   | kind:10002 (NIP-65) |  |
 | Rabbit    | 設定→localStorage |
 | Lumilumi  | kind:10002 (NIP-65) または設定から取得 | ローカル設定優先、なければ NIP-65、最後にbootstrap リレー |
-| Nos Haiku | kind:10002 (NIP-65) |  |
+| Nos Haiku | Outboxモデル (NIP-65) |  |
 | ぬるぬる  | 設定→localStorage | 単一リレー |
 | 野雨      | 設定→localStorage | bootstrap リレーにフォールバック |
 | flowgazer | 設定→localStorage |単一リレー |
@@ -43,10 +44,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | iris | Outboxモデル (NIP-65) |  |
 | Primal | 読み取り: キャッシュサーバー経由、書き込み: kind:10002 (NIP-65) | サーバー選択可能、ユーザーのリレー設定は kind:10002 で管理 |
 | Coracle | kind:10002 (NIP-65) | Negentropy 対応、リレー品質スコアリング、複数カテゴリのリレー管理 |
+| noStrudel | Outboxモデル (NIP-65) | applesauce-relay 使用 |
 | Amethyst | kind:10002 (NIP-65) | 用途別リレーセット (kind:10002、DM、検索、インデクサー、ブロック) |
 | Damus | kind:10002 (NIP-65) | kind:10002 → kind:3 → UserDefaults → Bootstrap リレーの順で取得 |
-| algia | 設定から取得 | ~/.config/algia/config.json、read/write/search/DM フラグ対応 |
-| nokakoi | 設定から取得 | GUI 設定、起動時に自動接続 |
+| algia | kind:10002 (NIP-65) | 設定ファイル (~/.config/algia/config.json) で初期接続、kind:10002で上書き |
+| kakoi | 設定から取得 | relays.json、起動時に自動接続 |
 
 # 検索
 各クライアントが検索に使用するリレーを調査しました。
@@ -57,8 +59,8 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 |-------------|-----------|
 | nostter | relay.nostr.band, search.nos.today |
 | Rabbit | relay.nostr.band, search.nos.today |
-| Lumilumi | directory.yabu.me, purplepag.es |
-| Nos Haiku | directory.yabu.me, purplepag.es, user.kindpag.es, indexer.coracle.social |
+| Lumilumi | directory.yabu.me, purplepag.es, relay.nostr.band, indexer.coracle.social |
+| Nos Haiku | search.nos.today |
 | ぬるぬる | search.nos.today |
 | 野雨 | なし |
 | flowgazer | なし |
@@ -66,10 +68,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | iris | ローカル検索 (キャッシュから検索) |
 | Primal | キャッシュサーバー経由 |
 | Coracle | relay.nostr.band, nostr.wine, search.nos.today |
+| noStrudel | relay.nostr.band, search.nos.today, relay.noswhere.com, filter.nostr.wine |
 | Amethyst | nostr.band, nos.today |
 | Damus | フルテキスト検索なし (ハッシュタグ・ユーザーのみ) |
 | algia | relay.nostr.band (search フラグ) |
-| nokakoi | なし |
+| kakoi | なし |
 
 # リアクションの取得方法
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
@@ -81,7 +84,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | nostter | 詳細ページを開いた時に購読開始 |
 | Rabbit | バッチ取得 (2秒間隔、最大150件) |
 | Lumilumi | 投稿ごとに購読 |
-| Nos Haiku | バッチ取得 (1秒間隔でマージ) |
+| Nos Haiku | リアルタイム購読 |
 | ぬるぬる | バッチ取得 (limit: 500) |
 | 野雨 | リアクション取得なし（送信のみ） |
 | flowgazer | 自分の投稿へのリアクションを取得 |
@@ -89,10 +92,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | iris | イベント毎に購読 (closeOnEose) |
 | Primal | キャッシュサーバーから事前集計済みデータを取得 |
 | Coracle | コンテキストイベントから kind:7 をフィルタリング |
+| noStrudel | イベント毎に購読 |
 | Amethyst | バッチ取得 + リアルタイム購読、リレーごとにノートIDを集約 |
 | Damus | 通知フィルターで kind:7 取得、LikeCounter で重複排除 |
 | algia | リアクション取得なし（送信のみ） |
-| nokakoi | タイムライン購読で kind:1,7 を同時取得 |
+| kakoi | リアクション収集なし |
 
 # フレームワーク
 各クライアントの実装に使用されているフレームワーク・ライブラリを調査しました。
@@ -112,10 +116,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | iris | TypeScript | React + Tauri | nostr-tools, nostr-social-graph, nostr-wasm | Zustand, Dexie, DaisyUI, Leaflet |
 | Primal | TypeScript | SolidJS | nostr-tools | Tiptap, Milkdown, HLS.js, @cashu/cashu-ts |
 | Coracle | TypeScript | Svelte | @welshman/*, nostr-tools | TailwindCSS, Capacitor, Bitcoin Connect, Fuse.js |
+| noStrudel | TypeScript | React 19 + Chakra UI | nostr-tools, applesauce-* | React Router, CodeMirror, Chart.js, Leaflet |
 | Amethyst | Kotlin | Jetpack Compose | quartz (自社ライブラリ) | OkHttp, Coil, Media3, secp256k1-kmp |
 | Damus | Swift + C | SwiftUI | nostrdb (自社ライブラリ) | Flatbuffers, Lightning Network統合 |
 | algia | Go | CLI | go-nostr | なし |
-| nokakoi | C# | Windows Forms (.NET 8.0) | NNostr.Client | SSTPLib, NTextCat |
+| kakoi | C# | Windows Forms (.NET 8.0) | NNostr.Client | SSTPLib, NTextCat, SkiaSharp, Gemini AI |
 
 # 調査済みクライアント一覧
 - web:
@@ -130,13 +135,14 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
   - [iris](https://iris.to/)
   - [Primal](https://primal.net/)
   - [Coracle](https://coracle.social/)
+  - [noStrudel](https://nostrudel.ninja/)
 - mobile:
   - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst)
   - [Damus](https://damus.io/)
 - cli:
   - [algia](https://github.com/mattn/algia)
 - desktop:
-  - [nokakoi](https://nokakoi.com/)
+  - [kakoi](https://nokakoi.com/)
 
 # 参考文献
 - クライアント
@@ -151,10 +157,11 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
   - iris: https://github.com/irislib/iris-client
   - Primal: https://github.com/PrimalHQ/primal-web-app
   - Coracle: https://github.com/coracle-social/coracle
+  - noStrudel: https://github.com/hzrd149/nostrudel
   - Amethyst: https://github.com/vitorpamplona/amethyst
   - Damus: https://github.com/damus-io/damus
   - algia: https://github.com/mattn/algia
-  - nokakoi: https://github.com/betonetojp/nokakoi
+  - kakoi: https://github.com/betonetojp/kakoi
 - NIPs
   - NIP-25 (Reactions): https://github.com/nostr-protocol/nips/blob/master/25.md
   - NIP-65 (Relay List Metadata): https://github.com/nostr-protocol/nips/blob/master/65.md
