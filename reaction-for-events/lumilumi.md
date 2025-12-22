@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Lumilumi リアクション取得方法
 
 ## 結論
@@ -11,3 +13,6 @@
 
 ## 参考
 - https://github.com/TsukemonoGit/lumilumi
+
+---
+← [README](../README.md)

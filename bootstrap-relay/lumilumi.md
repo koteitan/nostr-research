@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Lumilumi Bootstrap Relay
 
 ## 結論
@@ -50,3 +52,6 @@ relaySearchRelays でユーザの Kind 10002 を取得
 
 ## 参考
 - https://github.com/TsukemonoGit/lumilumi/blob/main/src/lib/stores/relays.ts
+
+---
+← [README](../README.md)

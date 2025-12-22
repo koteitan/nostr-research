@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # iris リアクション取得方法
 
 ## 結論
@@ -57,3 +59,6 @@ export function useReactionsByAuthor(eventId: string) {
 
 ## 参考
 - https://github.com/irislib/iris-client/blob/main/src/shared/hooks/useReactions.ts
+
+---
+← [README](../README.md)

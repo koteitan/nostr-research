@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # ぬるぬる (nullnull) リレー取得方法
 
 ## 結論
@@ -35,3 +37,6 @@ export function getWriteRelays() {
 
 ## 参考
 - https://github.com/tami1A84/null--nostr/blob/main/lib/nostr.js
+
+---
+← [README](../README.md)

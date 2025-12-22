@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Rabbit リレー取得方法
 
 ## 結論
@@ -22,3 +24,6 @@ const [config, setConfig] = createRoot(() =>
 
 ## 参考
 - https://github.com/syusui-s/rabbit/blob/main/src/core/useConfig.ts
+
+---
+← [README](../README.md)

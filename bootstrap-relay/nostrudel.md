@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # noStrudel Bootstrap Relay
 
 ## 結論
@@ -27,3 +29,6 @@ export const RECOMMENDED_FALLBACK_RELAYS = relays([
 
 ## 参考
 - https://github.com/hzrd149/nostrudel/blob/main/src/const.ts
+
+---
+← [README](../README.md)

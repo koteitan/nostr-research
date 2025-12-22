@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # ぬるぬる (nullnull) リアクション取得方法
 
 ## 結論
@@ -25,3 +27,6 @@ fetchEvents({ kinds: [7], '#e': eventIds, limit: 500 }, readRelays),
 
 ## 参考
 - https://github.com/tami1A84/null--nostr/blob/main/components/TimelineTab.js
+
+---
+← [README](../README.md)

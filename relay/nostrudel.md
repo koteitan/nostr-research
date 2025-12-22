@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # noStrudel リレー取得方法
 
 ## 結論
@@ -54,3 +56,6 @@ export function useUserOutbox(pubkey?: string | ProfilePointer): string[] | unde
 ## 参考
 - https://github.com/hzrd149/nostrudel/blob/main/src/services/outbox-subscriptions.ts
 - https://github.com/hzrd149/nostrudel/blob/main/src/hooks/use-user-mailboxes.ts
+
+---
+← [README](../README.md)

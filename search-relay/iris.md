@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # iris 検索リレー
 
 ## 結論
@@ -70,3 +72,6 @@ const PRODUCTION_RELAYS = [
 ## 参考
 - https://github.com/irislib/iris-client/blob/main/src/shared/hooks/useFeedEvents.ts
 - https://github.com/irislib/iris-client/blob/main/src/workers/profile-search.ts
+
+---
+← [README](../README.md)

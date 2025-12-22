@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Rabbit リアクション取得方法
 
 ## 結論
@@ -34,3 +36,6 @@ return useBatch<BatchedEventsTask>(() => ({
 
 ## 参考
 - https://github.com/syusui-s/rabbit/blob/main/src/nostr/useBatchedEvents.ts
+
+---
+← [README](../README.md)

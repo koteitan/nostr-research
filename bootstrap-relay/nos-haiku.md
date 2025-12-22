@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Nos Haiku Bootstrap Relay
 
 ## 結論
@@ -39,3 +41,6 @@ export const searchRelays = ['wss://search.nos.today/'];
 
 ## 参考
 - https://github.com/nikolat/nos-haiku/blob/main/src/lib/config.ts
+
+---
+← [README](../README.md)

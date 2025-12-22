@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Damus リアクション取得方法
 
 ## 結論
@@ -63,3 +65,6 @@ private func insert_reaction(_ ev: NostrEvent) -> Bool {
 ## 参考
 - https://github.com/damus-io/damus/blob/master/damus/Features/Timeline/Models/HomeModel.swift
 - https://github.com/damus-io/damus/blob/master/damus/Features/Notifications/Models/NotificationsModel.swift
+
+---
+← [README](../README.md)

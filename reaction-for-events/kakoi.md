@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # kakoi リアクション取得方法
 
 ## 結論
@@ -34,3 +36,6 @@ await _clients.CreateSubscription(
 
 ## 参考
 - https://github.com/betonetojp/kakoi
+
+---
+← [README](../README.md)

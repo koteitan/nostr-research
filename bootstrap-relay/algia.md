@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # algia Bootstrap Relay
 
 ## 結論
@@ -25,3 +27,6 @@ if len(cfg.Relays) == 0 {
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/main.go
+
+---
+← [README](../README.md)

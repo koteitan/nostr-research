@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Amethyst 検索リレー
 
 ## 結論
@@ -40,3 +42,6 @@ suspend fun normalizeSearchRelayListWithBackup(note: Note): Set<NormalizedRelayU
 ## 参考
 - https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/AccountSettings.kt
 - https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip51Lists/searchRelays/SearchRelayListState.kt
+
+---
+← [README](../README.md)

@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Primal Bootstrap Relay
 
 ## 結論
@@ -48,3 +50,6 @@ relays: ['wss://relay.primal.net'],
 ## 参考
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/sockets.tsx
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/relays.ts
+
+---
+← [README](../README.md)

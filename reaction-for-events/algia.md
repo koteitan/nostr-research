@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # algia リアクション取得方法
 
 ## 結論
@@ -44,3 +46,6 @@ func callLike(arg *likeArg) error {
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/timeline.go
+
+---
+← [README](../README.md)

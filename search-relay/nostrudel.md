@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # noStrudel 検索リレー
 
 ## 結論
@@ -18,3 +20,6 @@ export const DEFAULT_SEARCH_RELAYS = relays([
 
 ## 参考
 - https://github.com/hzrd149/nostrudel/blob/main/src/const.ts
+
+---
+← [README](../README.md)

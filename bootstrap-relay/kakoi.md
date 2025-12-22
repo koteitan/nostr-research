@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # kakoi Bootstrap Relay
 
 ## 結論
@@ -35,3 +37,6 @@ internal static List<Relay> LoadRelays()
 
 ## 参考
 - https://github.com/betonetojp/kakoi
+
+---
+← [README](../README.md)

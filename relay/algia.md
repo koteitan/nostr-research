@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # algia リレー取得方法
 
 ## 結論
@@ -53,3 +55,6 @@ if !cfg.tempRelay {
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/main.go
+
+---
+← [README](../README.md)

@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Coracle リアクション取得方法
 
 ## 結論
@@ -50,3 +52,6 @@ $: zaps = deriveValidZaps(context.filter(spec({kind: ZAP_RESPONSE})), event)
 ## 参考
 - https://github.com/coracle-social/coracle/blob/master/src/app/shared/NoteReducer.svelte
 - https://github.com/coracle-social/coracle/blob/master/src/app/shared/NoteReactions.svelte
+
+---
+← [README](../README.md)

@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Amethyst リアクション取得方法の調査結果
 
 調査日: 2025年12月21日
@@ -367,3 +369,6 @@ observeNoteReplyCount(note, accountViewModel): State<Int> {
 ### フィードフロー
 - `/amethyst/src/main/java/com/vitorpamplona/amethyst/model/topNavFeeds/noteBased/NoteFeedFlow.kt`
 - `/amethyst/src/main/java/com/vitorpamplona/amethyst/model/topNavFeeds/allFollows/AllFollowsFeedFlow.kt`
+
+---
+← [README](../README.md)

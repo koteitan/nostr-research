@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # 野雨 (Nosame) リレー取得方法
 
 ## 結論
@@ -31,3 +33,6 @@ class StorageManager {
 
 ## 参考
 - https://github.com/invertedtriangle358/Nosame/blob/main/app.js
+
+---
+← [README](../README.md)

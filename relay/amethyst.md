@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Amethyst リレー取得方法
 
 ## 結論
@@ -37,3 +39,6 @@ suspend fun normalizeIndexerRelayListWithBackup(note: Note): Set<NormalizedRelay
 ## 参考
 - https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/AccountSettings.kt
 - https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip51Lists/indexerRelays/IndexerRelayListState.kt
+
+---
+← [README](../README.md)

@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Primal リレー取得方法
 
 ## 結論
@@ -47,3 +49,6 @@ export const getDefaultRelays = (subid: string) => {
 ## 参考
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/sockets.tsx
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/relays.ts
+
+---
+← [README](../README.md)

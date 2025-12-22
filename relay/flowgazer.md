@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # flowgazer リレー取得方法
 
 ## 結論
@@ -24,3 +26,6 @@ localStorage.setItem('relayUrl', url);
 
 ## 参考
 - https://github.com/ompomz/flowgazer/blob/main/app.js
+
+---
+← [README](../README.md)

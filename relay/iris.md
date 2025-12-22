@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # iris リレー取得方法
 
 ## 結論
@@ -67,3 +69,6 @@ export class NDKRelayList extends NDKEvent {
 ## 参考
 - https://github.com/irislib/iris-client/blob/main/src/lib/ndk/outbox/tracker.ts
 - https://github.com/irislib/iris-client/blob/main/src/lib/ndk/events/kinds/relay-list.ts
+
+---
+← [README](../README.md)

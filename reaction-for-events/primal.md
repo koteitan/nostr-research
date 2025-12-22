@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Primal リアクション取得方法
 
 ## 結論
@@ -47,3 +49,6 @@ export enum Kind  {
 ## 参考
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/notes.tsx
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/feed.ts
+
+---
+← [README](../README.md)

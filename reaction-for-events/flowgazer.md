@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # flowgazer リアクション取得方法
 
 ## 結論
@@ -44,3 +46,6 @@ fetchReceivedLikes() {
 
 ## 参考
 - https://github.com/ompomz/flowgazer/blob/main/app.js
+
+---
+← [README](../README.md)

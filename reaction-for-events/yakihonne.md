@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # yakihonne リアクション取得方法
 
 ## 結論
@@ -48,3 +50,6 @@ const response = await getSubData([
 
 ## 参考
 - https://github.com/nicehashdev/yakihonne-web-app/blob/main/src/Hooks/useNoteStats.js
+
+---
+← [README](../README.md)

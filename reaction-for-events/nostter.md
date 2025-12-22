@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # nostter リアクション取得方法
 
 ## 結論
@@ -24,3 +26,6 @@ req.emit([
 
 ## 参考
 - https://github.com/SnowCait/nostter/blob/main/web/src/routes/(app)/[slug=note]/+page.svelte
+
+---
+← [README](../README.md)

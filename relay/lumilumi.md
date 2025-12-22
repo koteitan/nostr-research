@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Lumilumi リレー取得方法
 
 ## 結論
@@ -47,3 +49,6 @@ NIP-65 なし → defaultRelays をフォールバック
 
 ## 参考
 - https://github.com/TsukemonoGit/lumilumi/blob/main/src/lib/stores/relays.ts
+
+---
+← [README](../README.md)

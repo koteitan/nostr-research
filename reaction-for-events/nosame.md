@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # 野雨 (Nosame) リアクション取得方法
 
 ## 結論
@@ -38,3 +40,6 @@ kind: NOSTR_KINDS.REACTION,
 
 ## 参考
 - https://github.com/invertedtriangle358/Nosame/blob/main/app.js
+
+---
+← [README](../README.md)

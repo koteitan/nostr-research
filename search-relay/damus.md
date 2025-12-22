@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Damus検索機能リレー調査結果
 
 調査日: 2025-12-21
@@ -103,3 +105,6 @@ Amethyst (Androidクライアント) では既にNIP-50検索リレーの設定�
 - [Relay Setup 101 by Vitor Pamplona](https://vitor.npub.pro/post/relay-setup/)
 - [NIP-50 Specification](https://nips.nostr.com/50)
 - [Damus Official Documentation](https://nostr.com/clients/damus)
+
+---
+← [README](../README.md)

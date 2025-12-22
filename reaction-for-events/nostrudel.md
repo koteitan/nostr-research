@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # noStrudel リアクション取得方法
 
 ## 結論
@@ -49,3 +51,6 @@ export const reactionsLoader = createReactionsLoader(pool, {
 ## 参考
 - https://github.com/hzrd149/nostrudel/blob/main/src/hooks/use-event-reactions.ts
 - https://github.com/hzrd149/nostrudel/blob/main/src/services/loaders.ts
+
+---
+← [README](../README.md)

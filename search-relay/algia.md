@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # algia 検索リレー
 
 ## 結論
@@ -38,3 +40,6 @@ type Relay struct {
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/main.go
+
+---
+← [README](../README.md)

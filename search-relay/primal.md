@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # Primal 検索リレー
 
 ## 結論
@@ -26,3 +28,6 @@ let s = new WebSocket(cacheServer);
 
 ## 参考
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/sockets.tsx
+
+---
+← [README](../README.md)

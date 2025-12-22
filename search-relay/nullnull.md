@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # ぬるぬる (nullnull) 検索リレー
 
 ## 結論
@@ -42,3 +44,6 @@ export async function searchNotes(query, options = {}) {
 
 ## 参考
 - https://github.com/tami1A84/null--nostr/blob/main/lib/nostr.js
+
+---
+← [README](../README.md)

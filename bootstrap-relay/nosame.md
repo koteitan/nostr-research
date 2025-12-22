@@ -1,3 +1,5 @@
+← [README](../README.md)
+
 # 野雨 (Nosame) Bootstrap Relay
 
 ## 結論
@@ -22,3 +24,6 @@ const CONFIG = {
 
 ## 参考
 - https://github.com/invertedtriangle358/Nosame/blob/main/app.js
+
+---
+← [README](../README.md)
