@@ -6,16 +6,16 @@ A repository for researching Nostr implementations.
 
 ## Research Contents
 
-### [Client Research](client/README-en.md)
+### [Nostr Client Research](client/README-en.md)
 Research on implementation differences between Nostr clients.
 - Bootstrap Relays
 - Relay Acquisition Methods
 - Search Relays
 - Reaction Fetching Methods
 
-### [Relay Research](relay/README-en.md)
-Research on specifications of Nostr relay implementations.
-- Relay Rankings
+### [Nostr Relay Research](relay/README-en.md)
+Research on specifications of Nostr relay library implementations.
+- Relay Library Rankings
 - limit Parameter Behavior
 - Rate Limiting
 - Time-based Restrictions
