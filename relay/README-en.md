@@ -1,3 +1,5 @@
+[<< back](../README.md) | [Japanese](README-ja.md) | [English]
+
 # Nostr Relay Specifications
 
 ## Relay Rankings (2025/11/10)

@@ -1,8 +1,8 @@
-[Japanese](README.md) | [English]
+[<< back](../README.md) | [Japanese](README-ja.md) | [English]
 
 # Nostr Client Research
 A repository for researching implementation differences between Nostr clients.
-Contact npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk or [github issue](https://github.com/koteitan/nostr-client-research/issues) to request research on specific implementation differences. Client suggestions and PRs are also welcome.
+Contact npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk or [github issue](https://github.com/koteitan/nostr-research/issues) to request research on specific implementation differences. Client suggestions and PRs are also welcome.
 
 # Bootstrap Relays
 There are various methods for determining which relays Nostr subscribes to, such as using kind:10002 or the outbox model. Much of this information is contained in relay metadata. To obtain this metadata, clients must first connect to some relay. We researched how each client determines its bootstrap relays.

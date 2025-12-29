@@ -1,3 +1,5 @@
+[<< back](../README-ja.md) | [Japanese] | [English](README-en.md)
+
 # Nostr リレー仕様
 
 ## リレーランキング (2025/11/10)
