@@ -42,7 +42,7 @@ limits:
 |------|-------------------|------|
 | [0](https://github.com/nostr-protocol/nips/blob/master/01.md), [3](https://github.com/nostr-protocol/nips/blob/master/02.md), [40](https://github.com/nostr-protocol/nips/blob/master/28.md), [41](https://github.com/nostr-protocol/nips/blob/master/28.md) | [6 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L108-L115) | メタデータ、コンタクト、チャンネルイベント |
 | [1](https://github.com/nostr-protocol/nips/blob/master/01.md), [2](https://github.com/nostr-protocol/nips/blob/master/01.md), [4](https://github.com/nostr-protocol/nips/blob/master/04.md), [42](https://github.com/nostr-protocol/nips/blob/master/28.md) | [12 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L116-L123) | ノート、DM、チャンネルメッセージ |
-| [5](https://github.com/nostr-protocol/nips/blob/master/09.md)-[7](https://github.com/nostr-protocol/nips/blob/master/25.md), [43](https://github.com/nostr-protocol/nips/blob/master/28.md)-[49](https://github.com/nostr-protocol/nips/blob/master/49.md) | [30 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124-L131) | 削除、リアクション、チャンネルイベント |
+| [5](https://github.com/nostr-protocol/nips/blob/master/09.md)-[7](https://github.com/nostr-protocol/nips/blob/master/25.md), [43](https://github.com/nostr-protocol/nips/blob/master/28.md)-[49](https://github.com/nostr-protocol/nips/blob/master/49.md) | [30 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L158-L131) | 削除、リアクション、チャンネルイベント |
 | [10000-19999, 30000-39999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [24 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L132-L141) | 置換可能イベント |
 | [20000-29999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [60 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L142-L147) | 一時イベント |
 | 全イベント | [720 events/hour](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L148-L150) | 全体制限 |
@@ -51,7 +51,7 @@ limits:
 
 | 項目 | 値 |
 |------|-----|
-| 最大サブスクリプション数 | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124) |
+| 最大サブスクリプション数 | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L158) |
 | フィルター/REQレート | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) |
 | 接続レート | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) |
 
