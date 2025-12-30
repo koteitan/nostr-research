@@ -51,7 +51,7 @@ limits:
 
 | 項目 | 値 |
 |------|-----|
-| 最大サブスクリプション数 | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) |
+| 最大サブスクリプション数 | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124) |
 | フィルター/REQレート | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) |
 | 接続レート | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) |
 

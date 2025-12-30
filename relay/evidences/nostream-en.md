@@ -51,7 +51,7 @@ limits:
 
 | Item | Value |
 |------|-------|
-| Max Subscriptions | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) |
+| Max Subscriptions | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124) |
 | Filter/REQ Rate | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) |
 | Connection Rate | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) and [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) |
 
