@@ -23,12 +23,12 @@
 
 | リレー実装 | デフォルト最大limit | 設定パラメータ | 動作 |
 |-----------|-------------------|----------------|------|
-| strfry | [500](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L91) | `relay.maxFilterLimit` | フィルターごとに min(client_limit, 500) 件のイベントを返す |
-| nostream | [5000](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L162) | `limits.client.subscription.maxLimit` | サブスクリプションごとに min(client_limit, 5000) 件のイベントを返す |
-| nostr-rs-relay | 明示的な制限なし | デフォルト設定に見つからず | limit未指定時は全てのマッチするイベントを返す |
-| khatru (フレームワーク) | デフォルト制限なし | 該当なし | 実装依存、組み込みの最大limitなし |
-| haven (khatruベース) | 制限なし | 未設定 | eventstoreを通じて全てのマッチするイベントを返す |
-| wot-relay (khatruベース) | 制限なし | 未設定 | eventstoreを通じて全てのマッチするイベントを返す |
+| [strfry](evidences/strfry.md) | [500](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L91) | `relay.maxFilterLimit` | フィルターごとに min(client_limit, 500) 件のイベントを返す |
+| [nostream](evidences/nostream.md) | [5000](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L162) | `limits.client.subscription.maxLimit` | サブスクリプションごとに min(client_limit, 5000) 件のイベントを返す |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | 明示的な制限なし | デフォルト設定に見つからず | limit未指定時は全てのマッチするイベントを返す |
+| [khatru](evidences/khatru.md) (フレームワーク) | デフォルト制限なし | 該当なし | 実装依存、組み込みの最大limitなし |
+| [haven](evidences/haven.md) (khatruベース) | 制限なし | 未設定 | eventstoreを通じて全てのマッチするイベントを返す |
+| [wot-relay](evidences/wot-relay.md) (khatruベース) | 制限なし | 未設定 | eventstoreを通じて全てのマッチするイベントを返す |
 
 ## レート制限
 
@@ -36,20 +36,20 @@
 
 | リレー | タイプ | 最大サブスクリプション数 | イベント送信レート | フィルター/REQレート | 接続レート | 備考 |
 |-------|------|----------------------|-------------------|---------------------|------------|------|
-| strfry | - | [20](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L89) | デフォルトでは未設定 | 未設定 | 未設定 | 全ての制限は設定可能 |
-| nostream | Kind [0](https://github.com/nostr-protocol/nips/blob/master/01.md),[3](https://github.com/nostr-protocol/nips/blob/master/02.md),[40](https://github.com/nostr-protocol/nips/blob/master/28.md),[41](https://github.com/nostr-protocol/nips/blob/master/28.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [6 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L108-L115) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | メタデータ、コンタクト、チャンネルイベント |
-| nostream | Kind [1](https://github.com/nostr-protocol/nips/blob/master/01.md),[2](https://github.com/nostr-protocol/nips/blob/master/01.md),[4](https://github.com/nostr-protocol/nips/blob/master/04.md),[42](https://github.com/nostr-protocol/nips/blob/master/28.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [12 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L116-L123) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | ノート、DM、チャンネルメッセージ |
-| nostream | Kind [5](https://github.com/nostr-protocol/nips/blob/master/09.md)-[7](https://github.com/nostr-protocol/nips/blob/master/25.md),[43](https://github.com/nostr-protocol/nips/blob/master/28.md)-[49](https://github.com/nostr-protocol/nips/blob/master/49.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [30 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124-L131) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 削除、リアクション、チャンネルイベント |
-| nostream | Kind [10000-19999,30000-39999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [24 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L132-L141) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 置換可能イベント |
-| nostream | Kind [20000-29999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [60 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L142-L147) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 一時イベント |
-| nostream | 全イベント | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [720 events/hour](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L148-L150) 全体制限 | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 全kindの合計 |
-| nostr-rs-relay | - | 制限なし | 設定可能 (デフォルト: 無制限) | 設定可能 (デフォルト: 無制限) | 未設定 | オプション: [messages_per_sec](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L115), [subscriptions_per_min](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
-| khatru | - | 制限なし | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L12) (max 10 tokens) | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L17) (max 100 tokens) | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L21) (max 100 tokens) | フレームワーク。[`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9)経由 |
-| haven | Private | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L61) (max 100 tokens) | 個別設定なし | [3 conn/5min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L66) | Khatruベース |
-| haven | Chat | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L72) (max 100 tokens) | 個別設定なし | [3 conn/3min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L77) | Khatruベース |
-| haven | Inbox | 制限なし | [10 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L83) (max 20 tokens) | 個別設定なし | [3 conn/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L88) | Khatruベース |
-| haven | Outbox | 制限なし | [10 events/60min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L94) (max 100 tokens) | 個別設定なし | [3 conn/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L99) | Khatruベース |
-| wot-relay | - | 制限なし | [5 events/min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L131) (max 30 tokens) | [5 filters/min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L137) (max 30 tokens) | [10 conn/2min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L141) (max 30 tokens) | Khatruベース。khatruデフォルトより厳格 |
+| [strfry](evidences/strfry.md) | - | [20](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L89) | デフォルトでは未設定 | 未設定 | 未設定 | 全ての制限は設定可能 |
+| [nostream](evidences/nostream.md) | Kind [0](https://github.com/nostr-protocol/nips/blob/master/01.md),[3](https://github.com/nostr-protocol/nips/blob/master/02.md),[40](https://github.com/nostr-protocol/nips/blob/master/28.md),[41](https://github.com/nostr-protocol/nips/blob/master/28.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [6 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L108-L115) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | メタデータ、コンタクト、チャンネルイベント |
+| [nostream](evidences/nostream.md) | Kind [1](https://github.com/nostr-protocol/nips/blob/master/01.md),[2](https://github.com/nostr-protocol/nips/blob/master/01.md),[4](https://github.com/nostr-protocol/nips/blob/master/04.md),[42](https://github.com/nostr-protocol/nips/blob/master/28.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [12 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L116-L123) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | ノート、DM、チャンネルメッセージ |
+| [nostream](evidences/nostream.md) | Kind [5](https://github.com/nostr-protocol/nips/blob/master/09.md)-[7](https://github.com/nostr-protocol/nips/blob/master/25.md),[43](https://github.com/nostr-protocol/nips/blob/master/28.md)-[49](https://github.com/nostr-protocol/nips/blob/master/49.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [30 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L124-L131) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 削除、リアクション、チャンネルイベント |
+| [nostream](evidences/nostream.md) | Kind [10000-19999,30000-39999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [24 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L132-L141) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 置換可能イベント |
+| [nostream](evidences/nostream.md) | Kind [20000-29999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [60 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L142-L147) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 一時イベント |
+| [nostream](evidences/nostream.md) | 全イベント | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L110) | [720 events/hour](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L148-L150) 全体制限 | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 全kindの合計 |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | - | 制限なし | 設定可能 (デフォルト: 無制限) | 設定可能 (デフォルト: 無制限) | 未設定 | オプション: [messages_per_sec](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L115), [subscriptions_per_min](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
+| [khatru](evidences/khatru.md) | - | 制限なし | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L12) (max 10 tokens) | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L17) (max 100 tokens) | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L21) (max 100 tokens) | フレームワーク。[`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9)経由 |
+| [haven](evidences/haven.md) | Private | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L61) (max 100 tokens) | 個別設定なし | [3 conn/5min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L66) | Khatruベース |
+| [haven](evidences/haven.md) | Chat | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L72) (max 100 tokens) | 個別設定なし | [3 conn/3min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L77) | Khatruベース |
+| [haven](evidences/haven.md) | Inbox | 制限なし | [10 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L83) (max 20 tokens) | 個別設定なし | [3 conn/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L88) | Khatruベース |
+| [haven](evidences/haven.md) | Outbox | 制限なし | [10 events/60min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L94) (max 100 tokens) | 個別設定なし | [3 conn/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L99) | Khatruベース |
+| [wot-relay](evidences/wot-relay.md) | - | 制限なし | [5 events/min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L131) (max 30 tokens) | [5 filters/min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L137) (max 30 tokens) | [10 conn/2min](https://github.com/bitvora/wot-relay/blob/24b51de9/main.go#L141) (max 30 tokens) | Khatruベース。khatruデフォルトより厳格 |
 
 **重要な注意事項:**
 - **最大サブスクリプション数**: 接続ごとの最大同時REQサブスクリプション数。「制限なし」はリレーが上限を強制しないことを意味する（フレームワーク依存）
@@ -67,12 +67,12 @@
 
 | リレー | 最大未来オフセット | 最大過去オフセット | 備考 |
 |-------|------------------|------------------|------|
-| strfry | [+900秒 (15分)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L24) | [-94,608,000秒 (約3年)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L27) | この範囲外のイベントを拒否 |
-| nostream | [+900秒 (15分)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L90) | 制限なし | 未来のイベントのみ拒否 |
-| nostr-rs-relay | [+1,800秒 (30分)](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) | 制限なし | 未来のイベントのみ拒否 |
-| khatru | 強制なし | 強制なし | フレームワークはデフォルトでは強制しない |
-| haven | 強制なし | 強制なし | khatruの動作を継承 |
-| wot-relay | 強制なし | 強制なし | khatruの動作を継承 |
+| [strfry](evidences/strfry.md) | [+900秒 (15分)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L24) | [-94,608,000秒 (約3年)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L27) | この範囲外のイベントを拒否 |
+| [nostream](evidences/nostream.md) | [+900秒 (15分)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L90) | 制限なし | 未来のイベントのみ拒否 |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | [+1,800秒 (30分)](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) | 制限なし | 未来のイベントのみ拒否 |
+| [khatru](evidences/khatru.md) | 強制なし | 強制なし | フレームワークはデフォルトでは強制しない |
+| [haven](evidences/haven.md) | 強制なし | 強制なし | khatruの動作を継承 |
+| [wot-relay](evidences/wot-relay.md) | 強制なし | 強制なし | khatruの動作を継承 |
 
 **時刻検証の目的:**
 - **未来オフセット制限**: クライアントが遠い未来のタイムスタンプを持つイベントを作成することを防止
@@ -84,12 +84,12 @@
 
 | リレー | 一時イベント経過時間 | 一時イベント生存期間 | 通常イベント最大経過時間 | 備考 |
 |-------|-------------------|-------------------|----------------------|------|
-| strfry | [60秒](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L30)より古い場合拒否 | [300秒](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L33)後に自動削除 | - | Kind 20000-29999のみ |
-| nostream | - | - | - | 自動削除なし |
-| nostr-rs-relay | - | - | - | 自動削除なし |
-| khatru | - | - | - | 実装依存 |
-| haven | - | - | - | 自動削除なし |
-| wot-relay | - | - | [365日](https://github.com/bitvora/wot-relay/blob/24b51de9/.env.example#L27)後に削除 | MAX_AGE_DAYSで設定可能 |
+| [strfry](evidences/strfry.md) | [60秒](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L30)より古い場合拒否 | [300秒](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L33)後に自動削除 | - | Kind 20000-29999のみ |
+| [nostream](evidences/nostream.md) | - | - | - | 自動削除なし |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | - | - | - | 自動削除なし |
+| [khatru](evidences/khatru.md) | - | - | - | 実装依存 |
+| [haven](evidences/haven.md) | - | - | - | 自動削除なし |
+| [wot-relay](evidences/wot-relay.md) | - | - | [365日](https://github.com/bitvora/wot-relay/blob/24b51de9/.env.example#L27)後に削除 | MAX_AGE_DAYSで設定可能 |
 
 **主な違い:**
 - **一時イベント** (kind 20000-29999): 長期保存を想定していない一時的なイベント
