@@ -4,7 +4,7 @@
 A repository for researching implementation differences between Nostr clients.
 Contact npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk or [github issue](https://github.com/koteitan/nostr-research/issues) to request research on specific implementation differences. Client suggestions and PRs are also welcome.
 
-# Bootstrap Relays
+# [Bootstrap Relays](bootstrap-relay/)
 There are various methods for determining which relays Nostr subscribes to, such as using kind:10002 or the outbox model. Much of this information is contained in relay metadata. To obtain this metadata, clients must first connect to some relay. We researched how each client determines its bootstrap relays.
 
 *Last updated: 2025-12-21*
@@ -28,7 +28,7 @@ There are various methods for determining which relays Nostr subscribes to, such
 | [algia](bootstrap-relay/algia.md) | relay.nostr.band | |
 | [kakoi](bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
 
-# Relays
+# [Relays](relay/)
 We researched how each client obtains relays for building the home timeline.
 
 *Last updated: 2025-12-21*
@@ -52,7 +52,7 @@ We researched how each client obtains relays for building the home timeline.
 | [algia](relay/algia.md) | kind:10002 (NIP-65) | Initial connection via config file (~/.config/algia/config.json), overwritten by kind:10002 |
 | [kakoi](relay/kakoi.md) | From settings | relays.json, auto-connect on startup |
 
-# Search
+# [Search Relays](search-relay/)
 We researched which relays each client uses for search.
 
 *Last updated: 2025-12-21*
@@ -76,7 +76,7 @@ We researched which relays each client uses for search.
 | [algia](search-relay/algia.md) | relay.nostr.band (search flag) |
 | [kakoi](search-relay/kakoi.md) | None |
 
-# Reaction Collection Methods
+# [Reactions](reaction-for-events/)
 We researched how each client collects and crawls reactions for events.
 
 *Last updated: 2025-12-21*

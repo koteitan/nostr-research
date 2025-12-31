@@ -4,7 +4,7 @@
 クライアントの実装の違いを研究するためのリポジトリです。
 npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk か [github issue](https://github.com/koteitan/nostr-research/issues) に「この実装の違いをレポートしてほしい」と連絡を頂けると調査して掲載します。クライアントの提案もOK。PR で追加してくれるのも歓迎です。
 
-# Bootstrap リレー
+# [Bootstrap リレー](bootstrap-relay/)
 nostr が購読するリレーの決め方は、kind:10002 を使うもの、outbox モデルなど、さまざまがあり、それらの情報の多くはリレーのメタデータに含まれています。そのためには一度どこかのリレーに接続してメタデータを取得する必要があります。各クライアントがどのように Boot strap リレーを決定しているかを調査しました。
 
 *最終更新: 2025-12-21*
@@ -28,7 +28,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [algia](bootstrap-relay/algia.md) | relay.nostr.band | |
 | [kakoi](bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
 
-# リレー
+# [リレー](relay/)
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
 
 *最終更新: 2025-12-21*
@@ -52,7 +52,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [algia](relay/algia.md) | kind:10002 (NIP-65) | 設定ファイル (~/.config/algia/config.json) で初期接続、kind:10002で上書き |
 | [kakoi](relay/kakoi.md) | 設定から取得 | relays.json、起動時に自動接続 |
 
-# 検索
+# [検索リレー](search-relay/)
 各クライアントが検索に使用するリレーを調査しました。
 
 *最終更新: 2025-12-21*
@@ -76,7 +76,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [algia](search-relay/algia.md) | relay.nostr.band (search フラグ) |
 | [kakoi](search-relay/kakoi.md) | なし |
 
-# リアクションの取得方法
+# [リアクション](reaction-for-events/)
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
 
 *最終更新: 2025-12-21*
