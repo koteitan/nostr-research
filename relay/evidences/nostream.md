@@ -64,12 +64,25 @@ limits:
 | 最大未来オフセット | [+900秒 (15分)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L90) |
 | 最大過去オフセット | 制限なし |
 
+## フィルター値制限
+
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| フィルター値制限 | [2500](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L160) (合計) | `limits.client.subscription.maxFilterValues` |
+| REQあたり最大フィルター数 | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L159) | `limits.client.subscription.maxFilters` |
+| 最大authors数 | 2,500 (フィルター値制限による) | - |
+| 最小プレフィックス長 | [4](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L163) | `limits.client.subscription.minPrefixLength` |
+
+**備考**: `maxFilterValues` は authors, ids, kinds, #tags など全てのフィルター値の合計
+
 ## サイズ制限
 
-| 項目 | 値 |
-|------|-----|
-| ネットワークペイロード | 524,288バイト (512 KB) |
-| イベントコンテンツ | kind範囲0-10、40-49、11-39、50-maxで102,400バイト (100 KB) |
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| ネットワークペイロード | [524,288バイト (512 KB)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L39) | `network.maxPayloadSize` |
+| イベントコンテンツ | [102,400バイト (100 KB)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L94) | `limits.event.content[].maxLength` |
+
+**備考**: コンテンツサイズはkind範囲ごとに設定可能 (0-10, 40-49, 11-39, 50-max)
 
 ## サポートNIP
 

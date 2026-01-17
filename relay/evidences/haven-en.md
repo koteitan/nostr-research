@@ -60,11 +60,21 @@ privateRelay.QueryEvents = append(privateRelay.QueryEvents, privateDB.QueryEvent
 | Tagged Note Import Fetch Timeout | 120 sec (default) |
 | Web of Trust Fetch Timeout | 30 sec (default) |
 
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | No limit | - |
+| Max Filters per REQ | No limit | - |
+| Max authors (approx.) | ~7,400 (WebSocket limit) | - |
+
+**Notes**: Inherits from khatru; message size is the effective cap
+
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Max Message Size | Inherits Khatru max message size: 512,000 bytes (500 KB) |
+| Item | Value | Config |
+|------|-------|--------|
+| Max Message Size | 512,000 bytes (500 KB) | Inherits from khatru |
 
 ## Special Features
 

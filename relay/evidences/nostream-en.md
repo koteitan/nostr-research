@@ -64,12 +64,25 @@ limits:
 | Max Future Offset | [+900 sec (15 min)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L90) |
 | Max Past Offset | No limit |
 
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | [2500](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L160) (total) | `limits.client.subscription.maxFilterValues` |
+| Max Filters per REQ | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L159) | `limits.client.subscription.maxFilters` |
+| Max authors | 2,500 (filter value limit) | - |
+| Min Prefix Length | [4](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L163) | `limits.client.subscription.minPrefixLength` |
+
+**Notes**: `maxFilterValues` is the total of all filter values including authors, ids, kinds, #tags
+
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Network Payload | 524,288 bytes (512 KB) |
-| Event Content | 102,400 bytes (100 KB) for kind ranges 0-10, 40-49, 11-39, 50-max |
+| Item | Value | Config |
+|------|-------|--------|
+| Network Payload | [524,288 bytes (512 KB)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L39) | `network.maxPayloadSize` |
+| Event Content | [102,400 bytes (100 KB)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L94) | `limits.event.content[].maxLength` |
+
+**Notes**: Content size is configurable per kind range (0-10, 40-49, 11-39, 50-max)
 
 ## Supported NIPs
 

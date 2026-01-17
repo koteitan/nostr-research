@@ -55,11 +55,21 @@ MaxMessageSize: 512000,
 
 **Notes**: Framework does not enforce by default
 
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | No limit | - |
+| Max Filters per REQ | No limit | - |
+| Max authors (approx.) | ~7,400 (WebSocket limit) | - |
+
+**Notes**: No default filter value limit in framework; message size is the effective cap
+
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Max Message Size | 512,000 bytes (500 KB) |
+| Item | Value | Config |
+|------|-------|--------|
+| Max Message Size | [512,000 bytes (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b982/relay.go#L45) | `MaxMessageSize` |
 
 ## Framework Features
 

@@ -20,6 +20,9 @@ Nostr の実装を調査するリポジトリです。
 - レート制限
 - 時間ベースの制限
 
+### [リレーインスタンス調査](relay-instances/README-ja.md)
+各 Nostr リレーインスタンスの NIP-11 制限情報を調査しています。
+
 ## コントリビューション
 
 npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk か [github issue](https://github.com/koteitan/nostr-research/issues) に連絡を頂けると調査して掲載します。PR も歓迎です。

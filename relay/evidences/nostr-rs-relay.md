@@ -5,7 +5,7 @@
 ## 概要
 - **言語**: Rust
 - **設定ファイル**: `config.toml`
-- **リポジトリ**: https://git.sr.ht/~gheartsfield/nostr-rs-relay
+- **リポジトリ**: https://github.com/scsibug/nostr-rs-relay
 - **確認バージョン**: `d72af96d5f884e916cd3374dddd5550f8a45bfaf` (2025-02-23)
 
 ## limit パラメータ
@@ -32,8 +32,8 @@ if let Some(lim) = f.limit {
 | 項目 | 値 | 設定 |
 |------|-----|------|
 | 最大サブスクリプション数 | 制限なし | - |
-| イベント送信レート | 設定可能 (デフォルト: 無制限) | [messages_per_sec](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L115) |
-| フィルター/REQレート | 設定可能 (デフォルト: 無制限) | [subscriptions_per_min](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
+| イベント送信レート | 設定可能 (デフォルト: 無制限) | [messages_per_sec](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L115) |
+| フィルター/REQレート | 設定可能 (デフォルト: 無制限) | [subscriptions_per_min](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
 | 接続レート | 未設定 | - |
 
 ## 時間ベースの制限
@@ -42,16 +42,26 @@ if let Some(lim) = f.limit {
 
 | 項目 | 値 |
 |------|-----|
-| 最大未来オフセット | [+1,800秒 (30分)](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) |
+| 最大未来オフセット | [+1,800秒 (30分)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) |
 | 最大過去オフセット | 制限なし |
+
+## フィルター値制限
+
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| フィルター値制限 | 制限なし | - |
+| REQあたり最大フィルター数 | 制限なし | - |
+| 最大authors数 (概算) | ~1,900 (WebSocket制限による) | - |
+
+**備考**: 明示的なフィルター値制限はなく、メッセージサイズ制限が実質的な上限
 
 ## サイズ制限
 
-| 項目 | 値 |
-|------|-----|
-| イベントサイズ | 131,072バイト (128 KB) |
-| WebSocketメッセージ | 131,072バイト (128 KB) |
-| WebSocketフレーム | 131,072バイト (128 KB) |
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| イベントサイズ | [131,072バイト (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L136) | `limits.max_event_bytes` |
+| WebSocketメッセージ | [131,072バイト (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L138) | `limits.max_ws_message_bytes` |
+| WebSocketフレーム | [131,072バイト (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L140) | `limits.max_ws_frame_bytes` |
 
 ## 設定例
 

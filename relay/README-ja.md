@@ -43,7 +43,7 @@
 | [nostream](evidences/nostream.md) | Kind [10000-19999,30000-39999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L158) | [24 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L132-L141) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 置換可能イベント |
 | [nostream](evidences/nostream.md) | Kind [20000-29999](https://github.com/nostr-protocol/nips/blob/master/01.md) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L158) | [60 events/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L142-L147) | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 一時イベント |
 | [nostream](evidences/nostream.md) | 全イベント | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L158) | [720 events/hour](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L148-L150) 全体制限 | [240 msg/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L168) | [12/sec](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L71) および [48/min](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L73) | 全kindの合計 |
-| [nostr-rs-relay](evidences/nostr-rs-relay.md) | - | 制限なし | 設定可能 (デフォルト: 無制限) | 設定可能 (デフォルト: 無制限) | 未設定 | オプション: [messages_per_sec](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L115), [subscriptions_per_min](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | - | 制限なし | 設定可能 (デフォルト: 無制限) | 設定可能 (デフォルト: 無制限) | 未設定 | オプション: [messages_per_sec](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L115), [subscriptions_per_min](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
 | [khatru](evidences/khatru.md) | - | 制限なし | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L12) (max 10 tokens) | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L17) (max 100 tokens) | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L21) (max 100 tokens) | フレームワーク。[`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9)経由 |
 | [haven](evidences/haven.md) | Private | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L61) (max 100 tokens) | 個別設定なし | [3 conn/5min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L66) | Khatruベース |
 | [haven](evidences/haven.md) | Chat | 制限なし | [50 events/min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L72) (max 100 tokens) | 個別設定なし | [3 conn/3min](https://github.com/bitvora/haven/blob/81781b36/limits.go#L77) | Khatruベース |
@@ -59,6 +59,50 @@
 
 ---
 
+## フィルター値とメッセージサイズ制限
+
+このテーブルは、REQフィルターで指定できる値の数（authors, ids, kinds, #tags など）とメッセージサイズの制限を示します。
+
+### フィルター値制限
+
+| リレー | フィルター値制限 | REQあたり最大フィルター数 | 設定パラメータ | 備考 |
+|-------|----------------|------------------------|---------------|------|
+| [strfry](evidences/strfry.md) | 制限なし | [200](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L79) | `relay.maxReqFilterSize` | メッセージサイズ制限のみ |
+| [nostream](evidences/nostream.md) | [2500](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L160) (合計) | [10](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L159) | `limits.client.subscription.maxFilterValues` | 全フィルター値の合計 |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | 制限なし | 制限なし | - | メッセージサイズ制限のみ |
+| [khatru](evidences/khatru.md) | 制限なし | 制限なし | - | フレームワークにデフォルト制限なし |
+| [haven](evidences/haven.md) | 制限なし | 制限なし | - | khatru継承 |
+| [wot-relay](evidences/wot-relay.md) | 制限なし | 制限なし | - | khatru継承 |
+
+### メッセージサイズ制限
+
+| リレー | WebSocketメッセージ | イベントサイズ | コンテンツサイズ | 設定パラメータ |
+|-------|-------------------|--------------|-----------------|---------------|
+| [strfry](evidences/strfry.md) | [128 KB](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L76) | [64 KB](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L21) | - | `relay.maxWebsocketPayloadSize`, `events.maxEventSize` |
+| [nostream](evidences/nostream.md) | [512 KB](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L39) | - | [100 KB](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L94) (kind別) | `network.maxPayloadSize`, `limits.event.content[].maxLength` |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | [128 KB](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L138) | [128 KB](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L136) | - | `limits.max_ws_message_bytes`, `limits.max_event_bytes` |
+| [khatru](evidences/khatru.md) | [500 KB](https://github.com/fiatjaf/khatru/blob/9f99b982/relay.go#L45) | - | - | `MaxMessageSize` |
+| [haven](evidences/haven.md) | 500 KB | - | - | khatru継承 |
+| [wot-relay](evidences/wot-relay.md) | 500 KB | - | - | khatru継承 |
+
+### authors 配列の実質的な最大数
+
+pubkey 1件 = 64文字 (hex) + 約3文字 (引用符・カンマ) ≈ 67 bytes として計算:
+
+| リレー | 制限要因 | 最大 authors 数 (概算) |
+|-------|---------|----------------------|
+| nostream | `maxFilterValues: 2500` | **2,500 人** |
+| strfry | WebSocket 128 KB | ~1,900 人 |
+| nostr-rs-relay | WebSocket 128 KB | ~1,900 人 |
+| khatru系 | WebSocket 500 KB | ~7,400 人 |
+
+**注意事項:**
+- **nostream**: `maxFilterValues` は authors, ids, kinds, #tags など全てのフィルター値の合計
+- **その他**: 明示的なフィルター値制限はなく、メッセージサイズ制限が実質的な上限となる
+- フィルター値が多すぎるとリレーのパフォーマンスに影響する可能性がある
+
+---
+
 ## 時間ベースの制限
 
 ### イベント送信時刻の検証
@@ -69,7 +113,7 @@
 |-------|------------------|------------------|------|
 | [strfry](evidences/strfry.md) | [+900秒 (15分)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L24) | [-94,608,000秒 (約3年)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L27) | この範囲外のイベントを拒否 |
 | [nostream](evidences/nostream.md) | [+900秒 (15分)](https://github.com/cameri/nostream/blob/6a8ccb49/resources/default-settings.yaml#L90) | 制限なし | 未来のイベントのみ拒否 |
-| [nostr-rs-relay](evidences/nostr-rs-relay.md) | [+1,800秒 (30分)](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) | 制限なし | 未来のイベントのみ拒否 |
+| [nostr-rs-relay](evidences/nostr-rs-relay.md) | [+1,800秒 (30分)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) | 制限なし | 未来のイベントのみ拒否 |
 | [khatru](evidences/khatru.md) | 強制なし | 強制なし | フレームワークはデフォルトでは強制しない |
 | [haven](evidences/haven.md) | 強制なし | 強制なし | khatruの動作を継承 |
 | [wot-relay](evidences/wot-relay.md) | 強制なし | 強制なし | khatruの動作を継承 |
@@ -379,7 +423,7 @@ MAX_AGE_DAYS=365
 
 - strfry: https://github.com/hoytech/strfry
 - nostream: https://github.com/cameri/nostream
-- nostr-rs-relay: https://git.sr.ht/~gheartsfield/nostr-rs-relay
+- nostr-rs-relay: https://github.com/scsibug/nostr-rs-relay
 - khatru: https://github.com/fiatjaf/khatru
 - haven: https://github.com/bitvora/haven
 - wot-relay: https://github.com/bitvora/wot-relay

@@ -56,14 +56,24 @@ relay {
 
 **Notes**: Kind 20000-29999 only
 
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | No limit | - |
+| Max Filters per REQ | [200](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L79) | `relay.maxReqFilterSize` |
+| Max authors (approx.) | ~1,900 (WebSocket limit) | - |
+
+**Notes**: No explicit filter value limit; message size is the effective cap
+
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Event Size | 65,536 bytes (64 KB) - normalized JSON |
-| WebSocket Payload | 131,072 bytes (128 KB) |
-| Tag Value Size | 1,024 bytes |
-| Max Filters per REQ | 200 |
+| Item | Value | Config |
+|------|-------|--------|
+| Event Size | [65,536 bytes (64 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L21) | `events.maxEventSize` |
+| WebSocket Payload | [131,072 bytes (128 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L76) | `relay.maxWebsocketPayloadSize` |
+| Tag Value Size | [1,024 bytes](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L39) | `events.maxTagValSize` |
+| Max Tags | [2,000](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L36) | `events.maxNumTags` |
 
 ## Supported NIPs
 

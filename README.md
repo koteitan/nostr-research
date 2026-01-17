@@ -20,6 +20,9 @@ Research on specifications of Nostr relay library implementations.
 - Rate Limiting
 - Time-based Restrictions
 
+### [Relay Instance Research](relay-instances/README-en.md)
+Research on NIP-11 limitation information for each Nostr relay instance.
+
 ## Contributing
 
 Contact npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk or [github issue](https://github.com/koteitan/nostr-research/issues) to request research. PRs are also welcome.

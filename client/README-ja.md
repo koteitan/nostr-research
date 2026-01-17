@@ -4,101 +4,101 @@
 クライアントの実装の違いを研究するためのリポジトリです。
 npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk か [github issue](https://github.com/koteitan/nostr-research/issues) に「この実装の違いをレポートしてほしい」と連絡を頂けると調査して掲載します。クライアントの提案もOK。PR で追加してくれるのも歓迎です。
 
-# [Bootstrap リレー](bootstrap-relay/)
+# [Bootstrap リレー](evidences/bootstrap-relay/)
 nostr が購読するリレーの決め方は、kind:10002 を使うもの、outbox モデルなど、さまざまがあり、それらの情報の多くはリレーのメタデータに含まれています。そのためには一度どこかのリレーに接続してメタデータを取得する必要があります。各クライアントがどのように Boot strap リレーを決定しているかを調査しました。
 
 *最終更新: 2025-12-21*
 
 | クライアント | Bootstrap リレー | 備考 |
 |-------------|-----------------|------|
-| [nostter](bootstrap-relay/nostter.md) | relay.nostr.band, nos.lol, relay.damus.io | 日本語設定時に日本リレー追加 (relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, nrelay-jp.c-stellar.net) |
-| [Rabbit](bootstrap-relay/rabbit.md) | relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp | ブラウザ言語が日本語の場合に日本リレー追加 (relay-jp.nostr.wirednet.jp, holybea.com, r.kojira.io, yabu.me) |
-| [Lumilumi](bootstrap-relay/lumilumi.md) | directory.yabu.me, purplepag.es, relay.nostr.band, indexer.coracle.social | フォールバック: relay.nostr.band, nos.lol, nostr.bitcoiner.social |
-| [Nos Haiku](bootstrap-relay/nos-haiku.md) | directory.yabu.me, purplepag.es, user.kindpag.es, indexer.coracle.social | |
-| [ぬるぬる](bootstrap-relay/nullnull.md) | yabu.me | |
-| [野雨](bootstrap-relay/nosame.md) | relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, relay.barine.co | |
-| [flowgazer](bootstrap-relay/flowgazer.md) | r.kojira.io | |
-| [Yakihonne](bootstrap-relay/yakihonne.md) | nostr-01.yakihonne.com, nostr-02.yakihonne.com, relay.damus.io, relay.nostr.band, relay.nsec.app, monitorlizard.nostr1.com | |
-| [iris](bootstrap-relay/iris.md) | temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, nos.lol | |
-| [Primal](bootstrap-relay/primal.md) | キャッシュサーバー経由 (cache.primal.net) | ユーザーはキャッシュインスタンスを選択可能 |
-| [Coracle](bootstrap-relay/coracle.md) | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | |
-| [noStrudel](bootstrap-relay/nostrudel.md) | relay.primal.net, relay.damus.io, nos.lol | |
-| [Amethyst](bootstrap-relay/amethyst.md) | relay.nostr.band, relay.damus.io, relay.primal.net, nostr.mom, nos.lol, nostr.bitcoiner.social, nostr.oxtr.dev | bootstrapInbox (7リレー) |
-| [Damus](bootstrap-relay/damus.md) | relay.damus.io, nostr.land, nostr.wine, nos.lol | デバイスロケールで地域リレー追加 (日本: wirednet.jp, yabu.me, kojira.io / タイ: siamstr.com / ドイツ: einundzwanzig.space) |
-| [algia](bootstrap-relay/algia.md) | relay.nostr.band | |
-| [kakoi](bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
+| [nostter](evidences/bootstrap-relay/nostter.md) | relay.nostr.band, nos.lol, relay.damus.io | 日本語設定時に日本リレー追加 (relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, nrelay-jp.c-stellar.net) |
+| [Rabbit](evidences/bootstrap-relay/rabbit.md) | relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp | ブラウザ言語が日本語の場合に日本リレー追加 (relay-jp.nostr.wirednet.jp, holybea.com, r.kojira.io, yabu.me) |
+| [Lumilumi](evidences/bootstrap-relay/lumilumi.md) | directory.yabu.me, purplepag.es, relay.nostr.band, indexer.coracle.social | フォールバック: relay.nostr.band, nos.lol, nostr.bitcoiner.social |
+| [Nos Haiku](evidences/bootstrap-relay/nos-haiku.md) | directory.yabu.me, purplepag.es, user.kindpag.es, indexer.coracle.social | |
+| [ぬるぬる](evidences/bootstrap-relay/nullnull.md) | yabu.me | [ハードコードリレー一覧](evidences/relay/nullnull.md#ハードコードされたリレーurl) |
+| [野雨](evidences/bootstrap-relay/nosame.md) | relay-jp.nostr.wirednet.jp, yabu.me, r.kojira.io, relay.barine.co | |
+| [flowgazer](evidences/bootstrap-relay/flowgazer.md) | r.kojira.io | |
+| [Yakihonne](evidences/bootstrap-relay/yakihonne.md) | nostr-01.yakihonne.com, nostr-02.yakihonne.com, relay.damus.io, relay.nostr.band, relay.nsec.app, monitorlizard.nostr1.com | |
+| [iris](evidences/bootstrap-relay/iris.md) | temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, nos.lol | |
+| [Primal](evidences/bootstrap-relay/primal.md) | キャッシュサーバー経由 (cache.primal.net) | ユーザーはキャッシュインスタンスを選択可能 |
+| [Coracle](evidences/bootstrap-relay/coracle.md) | relay.damus.io, nos.lol (環境変数 VITE_DEFAULT_RELAYS) | |
+| [noStrudel](evidences/bootstrap-relay/nostrudel.md) | relay.primal.net, relay.damus.io, nos.lol | |
+| [Amethyst](evidences/bootstrap-relay/amethyst.md) | relay.nostr.band, relay.damus.io, relay.primal.net, nostr.mom, nos.lol, nostr.bitcoiner.social, nostr.oxtr.dev | bootstrapInbox (7リレー) |
+| [Damus](evidences/bootstrap-relay/damus.md) | relay.damus.io, nostr.land, nostr.wine, nos.lol | デバイスロケールで地域リレー追加 (日本: wirednet.jp, yabu.me, kojira.io / タイ: siamstr.com / ドイツ: einundzwanzig.space) |
+| [algia](evidences/bootstrap-relay/algia.md) | relay.nostr.band | |
+| [kakoi](evidences/bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | |
 
-# [リレー](relay/)
+# [リレー](evidences/relay/)
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
 
 *最終更新: 2025-12-21*
 
 | クライアント | リレー取得方法 | 詳細 |
 |-------------|---------------|------|
-| [nostter](relay/nostter.md) | kind:10002 (NIP-65) |  |
-| [Rabbit](relay/rabbit.md) | 設定→localStorage |
-| [Lumilumi](relay/lumilumi.md) | kind:10002 (NIP-65) または設定から取得 | ローカル設定優先、なければ NIP-65、最後にbootstrap リレー |
-| [Nos Haiku](relay/nos-haiku.md) | Outboxモデル (NIP-65) |  |
-| [ぬるぬる](relay/nullnull.md) | 設定→localStorage | 単一リレー |
-| [野雨](relay/nosame.md) | 設定→localStorage | bootstrap リレーにフォールバック |
-| [flowgazer](relay/flowgazer.md) | 設定→localStorage |単一リレー |
-| [Yakihonne](relay/yakihonne.md) | Outboxモデル (NIP-65) | outbox 無効時は bootstrap リレーにフォールバック |
-| [iris](relay/iris.md) | Outboxモデル (NIP-65) |  |
-| [Primal](relay/primal.md) | 読み取り: キャッシュサーバー経由、書き込み: kind:10002 (NIP-65) | サーバー選択可能、ユーザーのリレー設定は kind:10002 で管理 |
-| [Coracle](relay/coracle.md) | kind:10002 (NIP-65) | Negentropy 対応、リレー品質スコアリング、複数カテゴリのリレー管理 |
-| [noStrudel](relay/nostrudel.md) | Outboxモデル (NIP-65) | applesauce-relay 使用 |
-| [Amethyst](relay/amethyst.md) | kind:10002 (NIP-65) | 用途別リレーセット (kind:10002、DM、検索、インデクサー、ブロック) |
-| [Damus](relay/damus.md) | kind:10002 (NIP-65) | kind:10002 → kind:3 → UserDefaults → Bootstrap リレーの順で取得 |
-| [algia](relay/algia.md) | kind:10002 (NIP-65) | 設定ファイル (~/.config/algia/config.json) で初期接続、kind:10002で上書き |
-| [kakoi](relay/kakoi.md) | 設定から取得 | relays.json、起動時に自動接続 |
+| [nostter](evidences/relay/nostter.md) | kind:10002 (NIP-65) |  |
+| [Rabbit](evidences/relay/rabbit.md) | 設定→localStorage |
+| [Lumilumi](evidences/relay/lumilumi.md) | kind:10002 (NIP-65) または設定から取得 | ローカル設定優先、なければ NIP-65、最後にbootstrap リレー |
+| [Nos Haiku](evidences/relay/nos-haiku.md) | Outboxモデル (NIP-65) |  |
+| [ぬるぬる](evidences/relay/nullnull.md) | 設定→localStorage | 単一リレー、[ハードコードリレー一覧](evidences/relay/nullnull.md#ハードコードされたリレーurl) |
+| [野雨](evidences/relay/nosame.md) | 設定→localStorage | bootstrap リレーにフォールバック |
+| [flowgazer](evidences/relay/flowgazer.md) | 設定→localStorage |単一リレー |
+| [Yakihonne](evidences/relay/yakihonne.md) | Outboxモデル (NIP-65) | outbox 無効時は bootstrap リレーにフォールバック |
+| [iris](evidences/relay/iris.md) | Outboxモデル (NIP-65) |  |
+| [Primal](evidences/relay/primal.md) | 読み取り: キャッシュサーバー経由、書き込み: kind:10002 (NIP-65) | サーバー選択可能、ユーザーのリレー設定は kind:10002 で管理 |
+| [Coracle](evidences/relay/coracle.md) | kind:10002 (NIP-65) | Negentropy 対応、リレー品質スコアリング、複数カテゴリのリレー管理 |
+| [noStrudel](evidences/relay/nostrudel.md) | Outboxモデル (NIP-65) | applesauce-relay 使用 |
+| [Amethyst](evidences/relay/amethyst.md) | kind:10002 (NIP-65) | 用途別リレーセット (kind:10002、DM、検索、インデクサー、ブロック) |
+| [Damus](evidences/relay/damus.md) | kind:10002 (NIP-65) | kind:10002 → kind:3 → UserDefaults → Bootstrap リレーの順で取得 |
+| [algia](evidences/relay/algia.md) | kind:10002 (NIP-65) | 設定ファイル (~/.config/algia/config.json) で初期接続、kind:10002で上書き |
+| [kakoi](evidences/relay/kakoi.md) | 設定から取得 | relays.json、起動時に自動接続 |
 
-# [検索リレー](search-relay/)
+# [検索リレー](evidences/search-relay/)
 各クライアントが検索に使用するリレーを調査しました。
 
 *最終更新: 2025-12-21*
 
 | クライアント | 検索リレー |
 |-------------|-----------|
-| [nostter](search-relay/nostter.md) | relay.nostr.band, search.nos.today |
-| [Rabbit](search-relay/rabbit.md) | relay.nostr.band, search.nos.today |
-| [Lumilumi](search-relay/lumilumi.md) | relay.nostr.band, search.nos.today |
-| [Nos Haiku](search-relay/nos-haiku.md) | search.nos.today |
-| [ぬるぬる](search-relay/nullnull.md) | search.nos.today |
-| [野雨](search-relay/nosame.md) | なし |
-| [flowgazer](search-relay/flowgazer.md) | なし |
-| [Yakihonne](search-relay/yakihonne.md) | search.nos.today, relay.nostr.band, relay.ditto.pub, nostr.polyserv.xyz |
-| [iris](search-relay/iris.md) | ローカル検索 (キャッシュから検索) |
-| [Primal](search-relay/primal.md) | キャッシュサーバー経由 |
-| [Coracle](search-relay/coracle.md) | relay.nostr.band, nostr.wine, search.nos.today |
-| [noStrudel](search-relay/nostrudel.md) | relay.nostr.band, search.nos.today, relay.noswhere.com, filter.nostr.wine |
-| [Amethyst](search-relay/amethyst.md) | relay.nostr.band, nostr.wine, relay.noswhere.com, search.nos.today |
-| [Damus](search-relay/damus.md) | フルテキスト検索なし (ハッシュタグ・ユーザーのみ) |
-| [algia](search-relay/algia.md) | relay.nostr.band (search フラグ) |
-| [kakoi](search-relay/kakoi.md) | なし |
+| [nostter](evidences/search-relay/nostter.md) | relay.nostr.band, search.nos.today |
+| [Rabbit](evidences/search-relay/rabbit.md) | relay.nostr.band, search.nos.today |
+| [Lumilumi](evidences/search-relay/lumilumi.md) | relay.nostr.band, search.nos.today |
+| [Nos Haiku](evidences/search-relay/nos-haiku.md) | search.nos.today |
+| [ぬるぬる](evidences/search-relay/nullnull.md) | search.nos.today |
+| [野雨](evidences/search-relay/nosame.md) | なし |
+| [flowgazer](evidences/search-relay/flowgazer.md) | なし |
+| [Yakihonne](evidences/search-relay/yakihonne.md) | search.nos.today, relay.nostr.band, relay.ditto.pub, nostr.polyserv.xyz |
+| [iris](evidences/search-relay/iris.md) | ローカル検索 (キャッシュから検索) |
+| [Primal](evidences/search-relay/primal.md) | キャッシュサーバー経由 |
+| [Coracle](evidences/search-relay/coracle.md) | relay.nostr.band, nostr.wine, search.nos.today |
+| [noStrudel](evidences/search-relay/nostrudel.md) | relay.nostr.band, search.nos.today, relay.noswhere.com, filter.nostr.wine |
+| [Amethyst](evidences/search-relay/amethyst.md) | relay.nostr.band, nostr.wine, relay.noswhere.com, search.nos.today |
+| [Damus](evidences/search-relay/damus.md) | フルテキスト検索なし (ハッシュタグ・ユーザーのみ) |
+| [algia](evidences/search-relay/algia.md) | relay.nostr.band (search フラグ) |
+| [kakoi](evidences/search-relay/kakoi.md) | なし |
 
-# [リアクション](reaction-for-events/)
+# [リアクション](evidences/reaction-for-events/)
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
 
 *最終更新: 2025-12-21*
 
 | クライアント | 収集方法 |
 |-------------|---------|
-| [nostter](reaction-for-events/nostter.md) | 詳細ページを開いた時に購読開始 |
-| [Rabbit](reaction-for-events/rabbit.md) | バッチ取得 (2秒間隔、最大150件) |
-| [Lumilumi](reaction-for-events/lumilumi.md) | 投稿ごとに購読 |
-| [Nos Haiku](reaction-for-events/nos-haiku.md) | バッチ取得 (1秒バッファ, limit: 500) + リアルタイム購読 |
-| [ぬるぬる](reaction-for-events/nullnull.md) | バッチ取得 (limit: 500) |
-| [野雨](reaction-for-events/nosame.md) | リアクション取得なし（送信のみ） |
-| [flowgazer](reaction-for-events/flowgazer.md) | 自分の投稿へのリアクションを取得 |
-| [Yakihonne](reaction-for-events/yakihonne.md) | バッチ取得 + Dexie キャッシュ、WoT スコアでフィルタリング |
-| [iris](reaction-for-events/iris.md) | イベント毎に購読 (closeOnEose) |
-| [Primal](reaction-for-events/primal.md) | キャッシュサーバーから事前集計済みデータを取得 |
-| [Coracle](reaction-for-events/coracle.md) | コンテキストイベントから kind:7 をフィルタリング |
-| [noStrudel](reaction-for-events/nostrudel.md) | イベント毎に購読 |
-| [Amethyst](reaction-for-events/amethyst.md) | バッチ取得 + リアルタイム購読、リレーごとにノートIDを集約 |
-| [Damus](reaction-for-events/damus.md) | 通知フィルターで kind:7 取得、LikeCounter で重複排除 |
-| [algia](reaction-for-events/algia.md) | リアクション取得なし（送信のみ） |
-| [kakoi](reaction-for-events/kakoi.md) | リアクション収集なし |
+| [nostter](evidences/reaction-for-events/nostter.md) | 詳細ページを開いた時に購読開始 |
+| [Rabbit](evidences/reaction-for-events/rabbit.md) | バッチ取得 (2秒間隔、最大150件) |
+| [Lumilumi](evidences/reaction-for-events/lumilumi.md) | 投稿ごとに購読 |
+| [Nos Haiku](evidences/reaction-for-events/nos-haiku.md) | バッチ取得 (1秒バッファ, limit: 500) + リアルタイム購読 |
+| [ぬるぬる](evidences/reaction-for-events/nullnull.md) | バッチ取得 (limit: 500) |
+| [野雨](evidences/reaction-for-events/nosame.md) | リアクション取得なし（送信のみ） |
+| [flowgazer](evidences/reaction-for-events/flowgazer.md) | 自分の投稿へのリアクションを取得 |
+| [Yakihonne](evidences/reaction-for-events/yakihonne.md) | バッチ取得 + Dexie キャッシュ、WoT スコアでフィルタリング |
+| [iris](evidences/reaction-for-events/iris.md) | イベント毎に購読 (closeOnEose) |
+| [Primal](evidences/reaction-for-events/primal.md) | キャッシュサーバーから事前集計済みデータを取得 |
+| [Coracle](evidences/reaction-for-events/coracle.md) | コンテキストイベントから kind:7 をフィルタリング |
+| [noStrudel](evidences/reaction-for-events/nostrudel.md) | イベント毎に購読 |
+| [Amethyst](evidences/reaction-for-events/amethyst.md) | バッチ取得 + リアルタイム購読、リレーごとにノートIDを集約 |
+| [Damus](evidences/reaction-for-events/damus.md) | 通知フィルターで kind:7 取得、LikeCounter で重複排除 |
+| [algia](evidences/reaction-for-events/algia.md) | リアクション取得なし（送信のみ） |
+| [kakoi](evidences/reaction-for-events/kakoi.md) | リアクション収集なし |
 
 # フレームワーク
 各クライアントの実装に使用されているフレームワーク・ライブラリを調査しました。

@@ -5,7 +5,7 @@
 ## Overview
 - **Language**: Rust
 - **Config File**: `config.toml`
-- **Repository**: https://git.sr.ht/~gheartsfield/nostr-rs-relay
+- **Repository**: https://github.com/scsibug/nostr-rs-relay
 - **Verified Version**: `d72af96d5f884e916cd3374dddd5550f8a45bfaf` (2025-02-23)
 
 ## Limit Parameter
@@ -32,8 +32,8 @@ if let Some(lim) = f.limit {
 | Item | Value | Config |
 |------|-------|--------|
 | Max Subscriptions | No limit | - |
-| Event Submission Rate | Configurable (default: unlimited) | [messages_per_sec](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L115) |
-| Filter/REQ Rate | Configurable (default: unlimited) | [subscriptions_per_min](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
+| Event Submission Rate | Configurable (default: unlimited) | [messages_per_sec](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L115) |
+| Filter/REQ Rate | Configurable (default: unlimited) | [subscriptions_per_min](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L121) |
 | Connection Rate | Not configured | - |
 
 ## Time-based Restrictions
@@ -42,16 +42,26 @@ if let Some(lim) = f.limit {
 
 | Item | Value |
 |------|-------|
-| Max Future Offset | [+1,800 sec (30 min)](https://git.sr.ht/~gheartsfield/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) |
+| Max Future Offset | [+1,800 sec (30 min)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L105) |
 | Max Past Offset | No limit |
+
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | No limit | - |
+| Max Filters per REQ | No limit | - |
+| Max authors (approx.) | ~1,900 (WebSocket limit) | - |
+
+**Notes**: No explicit filter value limit; message size is the effective cap
 
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Event Size | 131,072 bytes (128 KB) |
-| WebSocket Message | 131,072 bytes (128 KB) |
-| WebSocket Frame | 131,072 bytes (128 KB) |
+| Item | Value | Config |
+|------|-------|--------|
+| Event Size | [131,072 bytes (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L136) | `limits.max_event_bytes` |
+| WebSocket Message | [131,072 bytes (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L138) | `limits.max_ws_message_bytes` |
+| WebSocket Frame | [131,072 bytes (128 KB)](https://github.com/scsibug/nostr-rs-relay/tree/d72af96d/item/config.toml#L140) | `limits.max_ws_frame_bytes` |
 
 ## Config Example
 

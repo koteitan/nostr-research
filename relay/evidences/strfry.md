@@ -56,14 +56,24 @@ relay {
 
 **備考**: Kind 20000-29999のみ
 
+## フィルター値制限
+
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| フィルター値制限 | 制限なし | - |
+| REQあたり最大フィルター数 | [200](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L79) | `relay.maxReqFilterSize` |
+| 最大authors数 (概算) | ~1,900 (WebSocket制限による) | - |
+
+**備考**: 明示的なフィルター値制限はなく、メッセージサイズ制限が実質的な上限
+
 ## サイズ制限
 
-| 項目 | 値 |
-|------|-----|
-| イベントサイズ | 65,536バイト (64 KB) - 正規化JSON |
-| WebSocketペイロード | 131,072バイト (128 KB) |
-| タグ値サイズ | 1,024バイト |
-| REQごとの最大フィルター数 | 200 |
+| 項目 | 値 | 設定 |
+|------|-----|------|
+| イベントサイズ | [65,536バイト (64 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L21) | `events.maxEventSize` |
+| WebSocketペイロード | [131,072バイト (128 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L76) | `relay.maxWebsocketPayloadSize` |
+| タグ値サイズ | [1,024バイト](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L39) | `events.maxTagValSize` |
+| 最大タグ数 | [2,000](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L36) | `events.maxNumTags` |
 
 ## サポートNIP
 

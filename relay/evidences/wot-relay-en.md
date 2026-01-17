@@ -65,11 +65,21 @@ policies.ConnectionRateLimiter(10, time.Minute*2, 30)  // 10 connections/2min, m
 
 **Notes**: Configurable via MAX_AGE_DAYS
 
+## Filter Value Limits
+
+| Item | Value | Config |
+|------|-------|--------|
+| Filter Value Limit | No limit | - |
+| Max Filters per REQ | No limit | - |
+| Max authors (approx.) | ~7,400 (WebSocket limit) | - |
+
+**Notes**: Inherits from khatru; message size is the effective cap
+
 ## Size Limits
 
-| Item | Value |
-|------|-------|
-| Max Message Size | Inherits Khatru max message size: 512,000 bytes (500 KB) |
+| Item | Value | Config |
+|------|-------|--------|
+| Max Message Size | 512,000 bytes (500 KB) | Inherits from khatru |
 
 ## Config Options
 
