@@ -100,6 +100,8 @@ On nostter the reaction subscription moved from `行 138-139` to line **204** be
 runs, and `defaultRelays` lost `relay.nostr.band` while `searchRelays` gained
 `nostr.wine`. **Always re-grep the current code** and re-read the snippet; treat the
 existing evidence file only as a hint for *where to look*, never as ground truth.
+(These drifts are only a reason to re-check the source — they must **not** appear in
+the output. See rule 8.)
 
 ### 4. Reference URLs use blob links WITHOUT a line anchor
 Format: `https://github.com/<owner>/<repo>/blob/<default-branch>/<path-from-repo-root>`.
@@ -128,6 +130,24 @@ as a failure.
 Use today's date (see project `CLAUDE.md` → currentDate) for the README
 `*最終更新: YYYY-MM-DD*` lines and any evidence "調査日".
 
+### 8. Keep diff-from-previous-research OUT of the summary READMEs (evidence files MAY keep it)
+The two summary pages — `client/README-ja.md` and `client/README-en.md` — must describe
+how each client works **now**, not what changed since the last run. Every table cell
+must read as a standalone description of the current implementation. **Forbidden in the
+READMEs**: any wording that references a past version or the previous research, e.g.
+"前回調査から変更", "旧版にあった〜は削除", "〜が追加された", "removed since the previous
+research", "no longer", "now uses".
+- Bad (README):  `relay-jp…, yabu.me, r.kojira.io（前回調査の relay.barine.co が削除され nostr.compile-error.net が追加された）`
+- Good (README): `relay-jp…, yabu.me, r.kojira.io, nostr.compile-error.net`
+- Bad (README):  `nos.lol が削除され relay.primal.net が追加された`
+- Good (README): `temp.iris.to, vault.iris.to, relay.damus.io, relay.snort.social, relay.primal.net`
+
+The **evidence files** (`client/evidences/**`) are detailed investigation pages and MAY
+include a short diff note (e.g. a "前回調査から…" bullet in the 説明 section) when a change
+is worth recording. Carry that diff text in the report's `changeNote` field (below) so
+the evidence writer can use it while the README writer drops it. So: diff notes are
+allowed in evidence files, never in the two README summary pages.
+
 ---
 
 ## Phase 3 — research: **1 sub-agent per client**
@@ -139,7 +159,10 @@ Spawn one agent per client (16 total). Each agent:
 3. For each of the 4 categories, greps + reads the current source and determines the
    answer, capturing: **conclusion**, **source file path** (from repo root),
    **line range** (from *current* code), a short **code snippet**, the **reference
-   blob URL**, and **notes**.
+   blob URL**, **notes**, and an optional **changeNote**. `conclusion` and `notes`
+   feed the README, so they describe the **current** state only — no diff wording
+   (see Phase-2 rule 8). Put any diff-from-previous-research observation in
+   `changeNote` (evidence-only; may be empty).
 4. Also captures the **framework** row: language, UI, nostr-access lib, other libs.
 5. Returns a single structured report (use the schema below).
 
@@ -157,10 +180,10 @@ lets the README tables be assembled only after every client is done.
   "defaultBranch": "main",
   "headCommit": "1f8cf9d",
   "categories": {
-    "bootstrap-relay":     { "conclusion": "...", "file": "web/src/lib/Constants.ts", "lines": "95-124", "snippet": "...", "refUrl": "https://github.com/SnowCait/nostter/blob/main/web/src/lib/Constants.ts", "notes": "日本語設定時に日本リレー追加 …" },
-    "relay":               { "conclusion": "kind:10002 (NIP-65)", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "" },
-    "search-relay":        { "conclusion": "...", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "" },
-    "reaction-for-events": { "conclusion": "...", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "" }
+    "bootstrap-relay":     { "conclusion": "...", "file": "web/src/lib/Constants.ts", "lines": "95-124", "snippet": "...", "refUrl": "https://github.com/SnowCait/nostter/blob/main/web/src/lib/Constants.ts", "notes": "日本語設定時に日本リレー追加 …", "changeNote": "前回調査時の relay.nostr.band がデフォルトから外れた（evidence-only, may be empty）" },
+    "relay":               { "conclusion": "kind:10002 (NIP-65)", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "", "changeNote": "" },
+    "search-relay":        { "conclusion": "...", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "", "changeNote": "" },
+    "reaction-for-events": { "conclusion": "...", "file": "...", "lines": "...", "snippet": "...", "refUrl": "...", "notes": "", "changeNote": "" }
   },
   "framework": { "language": "TypeScript", "ui": "Svelte + SvelteKit", "nostrAccess": "rx-nostr, nostr-tools, @rust-nostr/nostr-sdk", "otherLibs": "rxjs, Melt UI, svelte-i18n" }
 }
@@ -202,7 +225,9 @@ their two writers are independent.
 ```
 
 ## 説明
-- <explanatory bullets — keep concise, derived from the code>
+- <explanatory bullets — keep concise, derived from the code, describing the current behaviour>
+- <if changeNote is non-empty, add ONE diff bullet here, e.g. "前回調査から…"; evidence files
+  may carry this, the READMEs may not (see rule 8)>
 
 ## 参考
 - <refUrl>
@@ -223,7 +248,10 @@ are bilingual). Keep evidence files Japanese unless an existing `*-en.md` is pre
 ### README tables (both languages)
 
 Rebuild these five tables from the reports, preserving the existing column layout
-(see current `client/README-ja.md` for the exact headers and the index/参考文献 blocks):
+(see current `client/README-ja.md` for the exact headers and the index/参考文献 blocks).
+Build each cell from `conclusion` + `notes` only — **never** include `changeNote`, and
+strip any stray diff-from-previous-research wording so every cell is current-state only
+(see rule 8):
 
 1. Bootstrap リレー — `bootstrap-relay` conclusion + notes, links to evidence file.
 2. リレー — `relay` conclusion + notes.
