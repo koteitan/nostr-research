@@ -3,12 +3,12 @@
 # Rabbit Bootstrap Relay
 
 ## 結論
-- **Bootstrap リレー**: relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp
-- **日本語設定時追加**: relay-jp.nostr.wirednet.jp, nostr.holybea.com, r.kojira.io, yabu.me
+- **Bootstrap リレー**: ハードコードされたグローバルリレー (relay.damus.io, nos.lol, relay.snort.social, relay.nostr.wirednet.jp)、ブラウザ言語が 'ja' の場合は日本語リレーを追加
+- 日本語設定時追加: relay-jp.nostr.wirednet.jp, r.kojira.io, yabu.me
 
 ## ソースコード
 
-**ファイル**: `src/core/relayUrls.ts`
+**ファイル**: `src/core/relayUrls.ts` (行 1-15)
 
 ```typescript
 export const relaysGlobal: string[] = [
@@ -18,10 +18,9 @@ export const relaysGlobal: string[] = [
   'relay.nostr.wirednet.jp',
 ];
 
-// 日本語タイムライン用のリレーリスト（日本国内限定・日本語中心のリレー）
+// 日本語タイムライン用のリレーリスト
 export const relaysForJapaneseTL: string[] = [
   'wss://relay-jp.nostr.wirednet.jp',
-  'wss://nostr.holybea.com',
   'wss://r.kojira.io',
   'wss://yabu.me',
 ];
@@ -29,17 +28,11 @@ export const relaysForJapaneseTL: string[] = [
 export const relaysInJP: string[] = [...relaysForJapaneseTL];
 ```
 
-**ファイル**: `src/core/useConfig.ts` (行 111-117)
-
-```typescript
-const initialRelays = (): string[] => {
-  const relayUrls = [...relaysGlobal];
-  if (window.navigator.language.includes('ja')) {
-    relayUrls.push(...relaysInJP);
-  }
-  return relayUrls;
-};
-```
+## 説明
+- `relaysGlobal` にグローバルリレーがハードコードされている。
+- `relaysForJapaneseTL` / `relaysInJP` に日本語タイムライン用のリレーが定義されている。
+- リレー選択の判定は `src/core/useConfig.ts:129-135` の `initialRelays()` で行われ、`window.navigator.language.includes('ja')` が真の場合に日本語リレーを追加する。
+- 旧版にあった nostr.holybea.com は削除された。
 
 ## 参考
 - https://github.com/syusui-s/rabbit/blob/main/src/core/relayUrls.ts

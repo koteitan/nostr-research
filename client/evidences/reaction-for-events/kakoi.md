@@ -3,7 +3,7 @@
 # kakoi リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: リアクション収集なし
+- **リアクション取得方法**: 専用のリアクション収集なし。タイムライン購読 (Kinds=[1,6,7,16]) でリアクション (kind:7)・リポスト (kind:6,16) も一括受信するのみ。
 
 ## ソースコード
 
@@ -13,29 +13,22 @@
 await _clients.CreateSubscription(
     _subscriptionId,
     [
-        new NostrSubscriptionFilter
-        {
-            Kinds = [1, 6, 7, 16],
-            Since = DateTimeOffset.Now - _timeSpan,
-        }
+            new NostrSubscriptionFilter
+            {
+                Kinds = [1, 6, 7, 16],
+                Since = DateTimeOffset.Now - _timeSpan,
+            }
     ]
 );
 ```
 
 ## 説明
-
-- `Kinds = [1, 6, 7, 16]` でテキストノート、リポスト、リアクションを全て購読
-- `#e` タグでの投稿 ID 指定フィルター（ReferencedEventIds）は使用していない
-- つまり、「全てのリアクションイベント」を購読し、受信後にコード内でフィルタリング
-
-### 投稿ごとのリアクション収集について
-
-- 個別投稿のリアクション取得フィルター（`#e` タグ）を使用していない
-- リアクション数の集計機能なし
-- 自分が送信したリアクションと、自分へのリアクションをイベントとしてグリッドに表示するのみ
+- `SubscribeAsync()` の単一フィルターで kind 1/6/7/16 をまとめて購読している。
+- 投稿ごとの `#e` タグ (ReferencedEventIds) フィルターやリアクション数の集計は行わない。
+- 受信したイベントをそのままグリッドに表示する方式。
 
 ## 参考
-- https://github.com/betonetojp/kakoi
+- https://github.com/betonetojp/kakoi/blob/master/kakoi/NostrAccess.cs
 
 ---
 ← [README](../README.md)

@@ -3,13 +3,15 @@
 # Primal Bootstrap Relay
 
 ## 結論
-- **Bootstrap リレー**: Primalキャッシュサーバー経由で取得
+- **Bootstrap リレー**: Primalキャッシュサーバーに最初に接続 (既定 `wss://cache2.primal.net/v1`)。優先リレー既定値は `wss://relay.primal.net`、NIP-46(リモート署名)では `wss://nrs.primal.net` を使用
 
 ## ソースコード
 
-**ファイル**: `src/sockets.tsx` (行 76-82)
+**ファイル**: `src/sockets.tsx` (行 74-93)
 
-```typescript
+```tsx
+export let cacheServer = '';
+
 export const connect = () => {
   if (isNotConnected()) {
     cacheServer =
@@ -17,39 +19,15 @@ export const connect = () => {
       import.meta.env.PRIMAL_CACHE_URL;
 
     let s = new WebSocket(cacheServer);
-    // ...
-  }
-};
-```
-
-**ファイル**: `src/lib/relays.ts`
-
-```typescript
-export const getDefaultRelays = (subid: string) => {
-  sendMessage(JSON.stringify([
-    "REQ",
-    subid,
-    {cache: ["get_default_relays"]},
-  ]))
-};
-```
-
-**ファイル**: `src/lib/PrimalNip46.ts` (NIP-46 用)
-
-```typescript
-relays: ['wss://relay.primal.net'],
 ```
 
 ## 説明
-
-- Primalキャッシュサーバー (PRIMAL_CACHE_URL) に接続
-- `get_default_relays` でデフォルトリレー一覧を取得
-- キャッシュサーバーがリレー接続を管理
-- NIP-46 では `relay.primal.net` を使用
+- 起動時はまずキャッシュサーバーへ WebSocket 接続する。接続先は `localStorage` の `cacheServer`、無ければ `.env` の `PRIMAL_CACHE_URL`（既定 `wss://cache2.primal.net/v1`）。
+- 優先リレーの既定値は `.env` の `PRIMAL_PRIORITY_RELAYS="wss://relay.primal.net"`。優先リレーは `src/lib/relays.ts` の `getPreConfiguredRelays()` で取得する。
+- NIP-46（リモート署名）利用時は `src/lib/PrimalNip46.ts`（行 50）で `wss://nrs.primal.net` を使用する。
 
 ## 参考
 - https://github.com/PrimalHQ/primal-web-app/blob/main/src/sockets.tsx
-- https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/relays.ts
 
 ---
 ← [README](../README.md)

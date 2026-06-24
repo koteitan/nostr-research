@@ -1,46 +1,30 @@
 ← [README](../README.md)
 
-# ぬるぬる (nullnull) 検索リレー
+# ぬるぬる 検索リレー
 
 ## 結論
-- **検索リレー**: search.nos.today
+- **検索リレー**: search.nos.today (NIP-50)
 
 ## ソースコード
 
-**ファイル**: `lib/nostr.js` (行 25)
+**ファイル**: `lib/nostr.js` (行 53,78, 1341-1367)
 
 ```javascript
-// Search relay (NIP-50)
-export const SEARCH_RELAY = 'wss://search.nos.today'
-```
+const ENV_SEARCH_RELAY = process.env.NEXT_PUBLIC_SEARCH_RELAY
+export const SEARCH_RELAY = ENV_SEARCH_RELAY || 'wss://search.nos.today'
 
-**ファイル**: `lib/nostr.js` (行 1212-1238)
-
-```javascript
-// NIP-50: Search notes using search relay
 export async function searchNotes(query, options = {}) {
-  const { limit = 50, since, until, authors } = options
-  const p = getPool()
-
-  try {
-    const filter = {
-      kinds: [1],
-      search: query,
-      limit
-    }
-
-    const events = await p.querySync(
-      [SEARCH_RELAY],
-      filter
-    )
-
-    return events.sort((a, b) => b.created_at - a.created_at)
-  } catch (e) {
-    console.error('Search failed:', e)
-    return []
-  }
+  const filter = { kinds: [1], search: query, limit }
+  const events = await p.querySync([SEARCH_RELAY], filter)
+  ...
 }
 ```
+
+## 説明
+- NIP-50 の全文検索を利用する。
+- デフォルトの検索リレーは `wss://search.nos.today`。
+- 環境変数 `NEXT_PUBLIC_SEARCH_RELAY` で上書き可能。
+- `searchNotes`（kind:1）・`searchProfiles`（kind:0）の両方でこの単一の検索リレーを使用する。
 
 ## 参考
 - https://github.com/tami1A84/null--nostr/blob/main/lib/nostr.js

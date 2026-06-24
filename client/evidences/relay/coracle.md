@@ -3,25 +3,13 @@
 # Coracle リレー取得方法
 
 ## 結論
-- **リレー取得方法**: Outboxモデル (kind:10002 NIP-65) + @welshman/router
+- **リレー取得方法**: Outboxモデル（kind:10002 NIP-65）。`@welshman/router` がユーザーの RELAYS(10002) からリレーを選択。INDEXER_RELAYS でそのリレーリストを取得し、`relay_limit`（デフォルト3）で件数制限
 
 ## ソースコード
 
-**ファイル**: `.env.template`
-
-```bash
-VITE_INDEXER_RELAYS=wss://relay.nostr.band,wss://purplepag.es,wss://indexer.coracle.social
-```
-
-**ファイル**: `src/engine/state.ts`
+**ファイル**: `src/engine/state.ts` (行 829-832)
 
 ```typescript
-export const env = {
-  // ...
-  INDEXER_RELAYS: fromCsv(import.meta.env.VITE_INDEXER_RELAYS).map(normalizeRelayUrl) as string[],
-  // ...
-}
-
 // Configure router
 routerContext.getDefaultRelays = always(env.DEFAULT_RELAYS)
 routerContext.getIndexerRelays = always(env.INDEXER_RELAYS)
@@ -29,21 +17,12 @@ routerContext.getSearchRelays = always(env.SEARCH_RELAYS)
 routerContext.getLimit = () => getSetting("relay_limit")
 ```
 
-**ファイル**: `src/engine/state.ts` (行 86-87)
-
-```typescript
-import {RELAYS, INBOX_RELAYS} from "@welshman/util"
-
-export const metaKinds = [PROFILE, FOLLOWS, MUTES, RELAYS, INBOX_RELAYS]
-```
-
 ## 説明
-
-- @welshman/router がリレー選択を自動化
-- INDEXER_RELAYS でユーザーのリレーリスト (kind:10002) を取得
-- RELAYS = kind:10002 (NIP-65)
-- INBOX_RELAYS = kind:10050 (NIP-17)
-- relay_limit 設定でリレー数を制限 (デフォルト3)
+- `@welshman/router` の Router を設定し、リレー選択ロジックを定義する。
+- `getIndexerRelays` に `env.INDEXER_RELAYS` を指定し、ユーザーの RELAYS(kind:10002) リストの取得元とする。
+- `getLimit` は設定値 `relay_limit`（デフォルト3、state.ts 244行）を返し、選択するリレー件数を制限する。
+- ホームタイムラインは `@welshman/feeds` + `@welshman/router` の `Router.ForUser()` / `FromPubkeys()` でアウトボックス選択を行う。
+- RELAYS=kind:10002、MESSAGING_RELAYS=kind:10050 を用いる。
 
 ## 参考
 - https://github.com/coracle-social/coracle/blob/master/src/engine/state.ts

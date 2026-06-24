@@ -1,38 +1,33 @@
 ← [README](../README.md)
 
-# 野雨 (Nosame) リレー取得方法
+# 野雨 リレー取得方法
 
 ## 結論
-- **リレー取得方法**: 設定→localStorage
+- **リレー取得方法**: 設定→localStorage（NIP-65 不使用）。localStorage の relays キーから取得し、未保存時は DEFAULT_RELAYS にフォールバック
 
 ## ソースコード
 
-**ファイル**: `app.js` (行 59-68)
+**ファイル**: `nostr-core.js` (行 207-213)
 
 ```javascript
-class StorageManager {
-    // ...
-    _load(key, fallback) {
-        return JSON.parse(localStorage.getItem(key)) || fallback;
-    }
+getRelays() {
+    return this._load("relays", [...CONFIG.DEFAULT_RELAYS]);
+}
 
-    _save(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    getRelays() { return this._load("relays", [...CONFIG.DEFAULT_RELAYS]); }
-    saveRelays(relays) { this._save("relays", relays); }
+saveRelays(relays) {
+    this._save("relays", relays);
 }
 ```
 
 ## 説明
 
-- `localStorage` の `relays` キーに保存
-- kind:10002 (NIP-65) は使用していない
-- 保存されていない場合は DEFAULT_RELAYS にフォールバック
+- StorageManager クラス内で localStorage の `relays` キーからリレー一覧を取得する
+- 値が未保存の場合は `CONFIG.DEFAULT_RELAYS` にフォールバックする
+- kind:10002 (NIP-65) / outbox モデルは未使用
+- ユーザーが設定画面で編集したリレーを localStorage に保存し、全リレーへ同一フィルタで購読する
 
 ## 参考
-- https://github.com/invertedtriangle358/Nosame/blob/main/app.js
+- https://github.com/invertedtriangle358/Nosame/blob/main/nostr-core.js
 
 ---
 ← [README](../README.md)

@@ -3,11 +3,11 @@
 # Rabbit リレー取得方法
 
 ## 結論
-- **リレー取得方法**: 設定→localStorage
+- **リレー取得方法**: 設定→localStorage (RabbitConfig)。NIP-65 (kind:10002) は不使用
 
 ## ソースコード
 
-**ファイル**: `src/core/useConfig.ts` (行 150-153)
+**ファイル**: `src/core/useConfig.ts` (行 169-172)
 
 ```typescript
 const storage = createStorageWithSerializer(() => window.localStorage, serializer, deserializer);
@@ -17,10 +17,10 @@ const [config, setConfig] = createRoot(() =>
 ```
 
 ## 説明
-
-- リレー設定は `localStorage` の `RabbitConfig` キーに保存
-- kind:10002 (NIP-65) は使用していない
-- 初期リレーは `relaysGlobal` + 日本語なら `relaysInJP` を追加
+- ホームタイムラインのリレーは localStorage の `RabbitConfig.relayUrls` から取得する。
+- 初期値は `relaysGlobal`（日本語設定なら `relaysInJP` を追加）。
+- ユーザーが `addRelay` / `removeRelay` で編集できる。
+- kind:10002 / outbox モデルは使わない。
 
 ## 参考
 - https://github.com/syusui-s/rabbit/blob/main/src/core/useConfig.ts

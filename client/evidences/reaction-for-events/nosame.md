@@ -1,45 +1,36 @@
 ← [README](../README.md)
 
-# 野雨 (Nosame) リアクション取得方法
+# 野雨 リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: リアクション取得なし（送信のみ）
+- **リアクション取得方法**: リアクション取得なし（送信のみ）。購読は kind:1 (テキスト) と kind:0 (メタデータ) のみで、kind:7 は送信専用
 
 ## ソースコード
 
-**ファイル**: `app.js` (行 178-189)
+**ファイル**: `nostr-core.js` (行 594-614)
 
-購読フィルター:
 ```javascript
-_sendSubscription(ws) {
-    if (ws.readyState !== WebSocket.OPEN) return;
-    ws.send(JSON.stringify([
-        "REQ",
-        this.subId,
-        {
-            kinds: [NOSTR_KINDS.TEXT],  // kind:1 のみ
-            limit: CONFIG.NOSTR_REQ_LIMIT,
-            since: Math.floor(Date.now() / 1000) - CONFIG.NOSTR_REQ_SINCE_SECONDS_AGO
-        }
-    ]));
+async sendReaction(target) {
+    ...
+    const event = {
+        kind: NOSTR_KINDS.REACTION,
+        content: "+",
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [["e", target.id], ["p", target.pubkey]],
+        pubkey,
+    };
+    const signed = await window.nostr.signEvent(event);
+    this._broadcast(signed);
 }
 ```
 
-**ファイル**: `app.js` (行 234)
-
-リアクション送信:
-```javascript
-kind: NOSTR_KINDS.REACTION,
-```
-
 ## 説明
-
-- 購読は `kind:1` (テキストノート) のみ
-- `kind:7` (リアクション) の購読・取得機能なし
-- リアクション送信機能のみ実装
+- `_sendTextSubscription` / `_sendProfileSubscription` / `_sendProfileNotesSubscription` の購読は kind:1・kind:0 のみ。
+- kind:7 のリアクションを購読・集計するコードは存在しない。
+- `sendReaction` では kind:7 イベントを生成・署名し `_broadcast` で送信するのみ（受信・集計は行わない）。
 
 ## 参考
-- https://github.com/invertedtriangle358/Nosame/blob/main/app.js
+- https://github.com/invertedtriangle358/Nosame/blob/main/nostr-core.js
 
 ---
 ← [README](../README.md)

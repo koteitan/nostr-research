@@ -3,55 +3,37 @@
 # Coracle リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: フィード購読時にコンテキストとして取得 (NoteReducer)
+- **リアクション取得方法**: ノート表示時に各イベント単位で取得（per-note）。`Note.svelte` の `onMount` で `note_actions` 設定に応じ REACTION(7)/ZAP_RESPONSE(9735) 等を `Router.Replies(event)` のリレーへ購読し、NoteReducer が context へ集約
 
 ## ソースコード
 
-**ファイル**: `src/util/nostr.ts` (行 71)
-
-```typescript
-export const reactionKinds = [REACTION, ZAP_RESPONSE] as number[]
-```
-
-**ファイル**: `src/app/shared/NoteReducer.svelte` (行 67-97)
+**ファイル**: `src/app/shared/Note.svelte` (行 80-103)
 
 ```svelte
-const addEvent = async (event: TrustedEvent) => {
-  // ...
-  while (currentDepth > 0) {
-    const parent = await getParent(event)
+onMount(() => {
+  ...
+  const actions = getSetting("note_actions")
+  const kinds = []
+  if (actions.includes("replies")) { kinds.push(NOTE); kinds.push(COMMENT) }
+  if (actions.includes("reactions")) { kinds.push(REACTION) }
+  if (env.ENABLE_ZAPS && actions.includes("zaps")) { kinds.push(ZAP_RESPONSE) }
 
-    // Skip zaps that fail our zapper check
-    if (event.kind === ZAP_RESPONSE && !(await getValidZap(event, parent))) {
-      return
-    }
-
-    // Link the events, even if we end up skipping this one
-    addToMapKey(context, getIdOrAddress(parent), event)
-    // ...
-  }
-}
-```
-
-**ファイル**: `src/app/shared/NoteReactions.svelte` (行 18-21)
-
-```svelte
-$: reposts = context.filter(e => repostKinds.includes(e.kind))
-$: reactions = uniqBy(prop("pubkey"), context.filter(spec({kind: REACTION})))
-$: zaps = deriveValidZaps(context.filter(spec({kind: ZAP_RESPONSE})), event)
+  myLoad({
+    relays: Router.get().Replies(event).policy(addMaximalFallbacks).getUrls(),
+    filters: getReplyFilters([event], {kinds}),
+  })
+})
 ```
 
 ## 説明
-
-- フィード読み込み時に @welshman/app の repository を使用
-- NoteReducer がイベント間の親子関係を構築
-- context (Map) にリアクション・リポスト・Zap を格納
-- リアクションは pubkey で重複排除
-- 個別のイベントごとに #e 取得ではなく、ストリームで受信
+- ノートコンポーネント `Note.svelte` の `onMount` 時に、各イベント単位（per-note）でリアクション等を購読する。
+- `note_actions` 設定（`getSetting("note_actions")`）に応じて購読する kind を組み立てる。`reactions` 有効時に REACTION(7)、`zaps` 有効かつ `env.ENABLE_ZAPS` で ZAP_RESPONSE(9735) を追加。
+- 購読先リレーは `Router.get().Replies(event)` に `addMaximalFallbacks` ポリシーを適用したものを使い、フィルターは `getReplyFilters([event], {kinds})` で生成する。
+- `reactionKinds = [REACTION, ZAP_RESPONSE]` は `src/util/nostr.ts`（73 行）で定義されている。
+- `NoteReducer.svelte`（75-108 行）がリポスト/リアクション/Zap を親イベントに紐付けて context(Map) に格納し、`NoteReactions.svelte` が pubkey で重複排除して表示する。
 
 ## 参考
-- https://github.com/coracle-social/coracle/blob/master/src/app/shared/NoteReducer.svelte
-- https://github.com/coracle-social/coracle/blob/master/src/app/shared/NoteReactions.svelte
+- https://github.com/coracle-social/coracle/blob/master/src/app/shared/Note.svelte
 
 ---
 ← [README](../README.md)

@@ -3,40 +3,28 @@
 # algia 検索リレー
 
 ## 結論
-- **検索リレー**: relay.nostr.band（search フラグ）
+- **検索リレー**: 設定ファイルで Search:true(かつ Read:true)を持つリレーを検索に使用。デフォルトでは relay.nostr.band が該当
 
 ## ソースコード
 
-**ファイル**: `main.go` (行 666-673)
+**ファイル**: `main.go` (行 716-723)
 
 ```go
 } else if filter.Search != "" {
-    for k, v := range cfg.Relays {
-        if !v.Read || !v.Search {
-            continue
-        }
-        rmap[k] = struct{}{}
-    }
-}
-```
-
-**リレー構造体定義** (行 32-40):
-
-```go
-type Relay struct {
-    Read     bool `json:"read"`
-    Write    bool `json:"write"`
-    Search   bool `json:"search"`    // 検索用フラグ
-    Global   bool `json:"global"`
-    DM       bool `json:"dm"`
-    Bookmark bool `json:"bm"`
+	for k, v := range cfg.Relays {
+		if !v.Read || !v.Search {
+			continue
+		}
+		rmap[k] = struct{}{}
+	}
 }
 ```
 
 ## 説明
-
-- 設定ファイルにおいて、各リレーに対して `"search": true` と明示的に設定されたリレーが検索対象
-- `relay.nostr.band` はデフォルトで `Search: true` で設定される
+- Relay 構造体(main.go:42-49)の Search フラグで検索対象リレーを判定する。
+- `filter.Search` が指定された場合、config.json の各リレーのうち Read かつ Search が true のものだけを選択する。
+- 同等の選択ロジックは main.go:832 にも存在する。
+- NIP-50 検索に対応。固定の検索専用リレーはなく、config.json の search:true 設定に依存する。
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/main.go

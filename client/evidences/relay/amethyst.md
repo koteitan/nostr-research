@@ -3,42 +3,34 @@
 # Amethyst リレー取得方法
 
 ## 結論
-- **リレー取得方法**: Outboxモデル (kind:10002 NIP-65) + IndexerRelayList
+- **リレー取得方法**: Outbox モデル (NIP-65 kind:10002)。ホームタイムライン用の書き込み/読み込みリレーは `AdvertisedRelayListEvent` から取得し `outboxFlow` / `inboxFlow` で公開。
+- 未設定時は `Constants.eventFinderRelays` / `bootstrapInbox` にフォールバック。
+- 加えて Indexer リレー (`DefaultIndexerRelayList`: purplepag.es, indexer.coracle.social, user.kindpag.es, directory.yabu.me, profiles.nostr1.com) で他ユーザーのリレーリスト等を取得。
 
 ## ソースコード
 
-**ファイル**: `amethyst/src/main/java/com/vitorpamplona/amethyst/model/AccountSettings.kt` (行 83)
+**ファイル**: `amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip65RelayList/Nip65RelayListState.kt` (行 61-93)
 
 ```kotlin
-val DefaultIndexerRelayList = setOf(Constants.purplepages, Constants.coracle, Constants.userkinds)
-```
+fun normalizeNIP65WriteRelayListWithBackup(note: Note): Set<NormalizedRelayUrl> = nip65Event(note)?.writeRelaysNorm()?.toSet() ?: Constants.eventFinderRelays
 
-**ファイル**: `amethyst/src/main/java/com/vitorpamplona/amethyst/model/Constants.kt`
+fun normalizeNIP65ReadRelayListWithBackup(note: Note): Set<NormalizedRelayUrl> = nip65Event(note)?.readRelaysNorm()?.toSet() ?: Constants.bootstrapInbox
 
-```kotlin
-val purplepages = RelayUrlNormalizer.normalize("wss://purplepag.es")
-val coracle = RelayUrlNormalizer.normalize("wss://indexer.coracle.social")
-val userkinds = RelayUrlNormalizer.normalize("wss://user.kindpag.es")
-```
-
-**ファイル**: `amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip51Lists/indexerRelays/IndexerRelayListState.kt`
-
-```kotlin
-suspend fun normalizeIndexerRelayListWithBackup(note: Note): Set<NormalizedRelayUrl> =
-    indexListEvent(note)?.let { decryptionCache.relays(it) }?.ifEmpty { null }
-        ?: DefaultIndexerRelayList
+val outboxFlow =
+    getNIP65RelayListFlow()
+        .map { normalizeNIP65WriteRelayListWithBackup(it.note) }
+        .onStart { emit(normalizeNIP65WriteRelayListWithBackup(nip65ListNote)) }
 ```
 
 ## 説明
-
-- DefaultIndexerRelayList: purplepag.es, indexer.coracle.social, user.kindpag.es
-- IndexerRelayListEvent を使用してユーザーのリレーリストを取得
-- リレーリストがない場合は DefaultIndexerRelayList にフォールバック
-- NIP-65 (kind:10002) 対応
+- NIP-65 (kind:10002) のアウトボックスモデルを採用。
+- 書き込みリレーは `writeRelaysNorm()`、読み込みリレーは `readRelaysNorm()` から取得し、`outboxFlow` / `inboxFlow` として公開する。
+- ユーザーが NIP-65 リレーリストを未設定の場合、書き込みは `Constants.eventFinderRelays`、読み込みは `Constants.bootstrapInbox` にフォールバックする。
+- `DefaultIndexerRelayList` は `commons/defaults/AmethystDefaults.kt` (62-63行) に移動し、旧リストに directory.yabu.me と profiles.nostr1.com が追加された。
+- 他ユーザーのリレーリスト等の取得は Indexer リレー経由で行い、`IndexerRelayListState.normalizeIndexerRelayListWithBackup()` で処理する。
 
 ## 参考
-- https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/AccountSettings.kt
-- https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip51Lists/indexerRelays/IndexerRelayListState.kt
+- https://github.com/vitorpamplona/amethyst/blob/main/amethyst/src/main/java/com/vitorpamplona/amethyst/model/nip65RelayList/Nip65RelayListState.kt
 
 ---
 ← [README](../README.md)

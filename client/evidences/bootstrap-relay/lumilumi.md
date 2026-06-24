@@ -3,52 +3,35 @@
 # Lumilumi Bootstrap Relay
 
 ## 結論
-- **Bootstrap リレー (relaySearchRelays)**: directory.yabu.me, purplepag.es, relay.nostr.band, indexer.coracle.social
-- **フォールバック (defaultRelays)**: relay.nostr.band, nos.lol, nostr.bitcoiner.social
+- **Bootstrap リレー**: Bootstrap リレー (relaySearchRelays): directory.yabu.me, purplepag.es, indexer.coracle.social, nostr.wine。kind:0/3/10002 の取得に特化したリレーで、最初に接続してユーザのリレーリスト(NIP-65)を探す。kind:10002 が見つからない場合のフォールバックが defaultRelays: nos.lol, nostr.bitcoiner.social, nostr-pub.wellorder.net, relay.snort.social。
 
 ## ソースコード
 
-**ファイル**: `src/lib/stores/relays.ts`
+**ファイル**: `src/lib/stores/relays.ts` (行 1-28)
 
 ```typescript
 export const relaySearchRelays = [
-  // kind 0 (ユーザのプロフィール) と kind 10002 (利用中のリレーリスト) に特化
-  "wss://directory.yabu.me",    // kind0, 3, 10002特化
-  "wss://purplepag.es",         // https://purplepag.es/what
-  "wss://relay.nostr.band",
+  //kind 0 (ユーザのプロフィール) と kind 10002 (利用中のリレーリスト) 特化
+  "wss://directory.yabu.me", //kind0, 3, 10002特化
+  "wss://purplepag.es", //https://purplepag.es/what
   "wss://indexer.coracle.social",
+  "wss://nostr.wine",
+  //"wss://relay.nostr.band",
 ];
 
 export const defaultRelays = [
-  "wss://relay.nostr.band",
   "wss://nos.lol",
   "wss://nostr.bitcoiner.social",
+  "wss://nostr-pub.wellorder.net/",
+  "wss://relay.snort.social/",
 ];
 ```
 
-## 使い分け
-
-### relaySearchRelays（Bootstrap）
-- ユーザ情報の検索・取得に特化
-- Kind 0（プロフィール）、Kind 3（コンタクト）、Kind 10002（リレーリスト）の取得
-- `getRelayList()` でユーザのリレー設定を取得する時に使用
-- アプリ初期化時に最初に接続するリレー
-
-### defaultRelays（フォールバック）
-- 一般的なイベント取得のフォールバック
-- ユーザがリレー設定を持たない場合のデフォルト
-- タイムライン、検索、イベント投稿に使用
-
-## 処理フロー
-
-```
-アプリ起動
-  ↓
-relaySearchRelays でユーザの Kind 10002 を取得
-  ↓
-ユーザのリレー設定が見つかった → それを使用
-見つからなかった → defaultRelays をフォールバックとして使用
-```
+## 説明
+- `relaySearchRelays` は kind:0/3/10002 の取得に特化したブートストラップ用リレーで、最初に接続してユーザのリレーリスト (NIP-65) を探す。
+- 構成は directory.yabu.me, purplepag.es, indexer.coracle.social, nostr.wine の 4 つ。
+- kind:10002 が見つからない場合は `defaultRelays` (nos.lol, nostr.bitcoiner.social, nostr-pub.wellorder.net, relay.snort.social) にフォールバックする。
+- 旧調査からリスト変更あり: `relaySearchRelays` に nostr.wine を追加・relay.nostr.band を除外。`defaultRelays` は nos.lol/nostr.bitcoiner.social/nostr-pub.wellorder.net/relay.snort.social に変更。
 
 ## 参考
 - https://github.com/TsukemonoGit/lumilumi/blob/main/src/lib/stores/relays.ts

@@ -3,52 +3,32 @@
 # Primal リレー取得方法
 
 ## 結論
-- **リレー取得方法**: Primalキャッシュサーバー経由 (kind:10002 も対応)
+- **リレー取得方法**: ホームタイムラインはPrimalキャッシュサーバー経由。ユーザーのリレー一覧はキャッシュの get_user_relays (NIP-65 kind:10002 を Kind.UserRelays=10000139 として返却) から取得し relaySettings に反映。空の場合は get_default_relays を使用
 
 ## ソースコード
 
-**ファイル**: `src/sockets.tsx`
+**ファイル**: `src/lib/profile.ts` (行 352-360)
 
 ```typescript
-cacheServer =
-  localStorage.getItem('cacheServer') ||
-  import.meta.env.PRIMAL_CACHE_URL;
+export const getRelays = async (pubkey: string | undefined, subid: string) => {
+  if (!pubkey) return;
 
-let s = new WebSocket(cacheServer);
-```
-
-**ファイル**: `src/lib/relays.ts`
-
-```typescript
-export const getPreConfiguredRelays = () => {
-  const rels: string[] = import.meta.env.PRIMAL_PRIORITY_RELAYS?.split(',') || [];
-
-  return rels.reduce(
-    (acc: NostrRelays, r: string) =>
-      ({ ...acc, [r]: { read: true, write: true } }),
-    {},
-  );
-};
-
-export const getDefaultRelays = (subid: string) => {
   sendMessage(JSON.stringify([
     "REQ",
     subid,
-    {cache: ["get_default_relays"]},
-  ]))
+    {cache: ["get_user_relays", { pubkey }]},
+  ]));
 };
 ```
 
 ## 説明
-
-- Primalは独自のキャッシュサーバーを使用
-- キャッシュサーバーがリレー接続を一元管理
-- `PRIMAL_PRIORITY_RELAYS` 環境変数で追加リレーを設定可能
-- kind:10002 (RelayList) もサポート (constants.ts で定義)
+- フィードは基本的にPrimalキャッシュサーバーが配信し、クライアントが直接リレーへ接続するわけではない。
+- ユーザーのリレー一覧はキャッシュサーバーの `get_user_relays` で取得し、NIP-65 の kind:10002 を `Kind.UserRelays=10000139` として返却する。
+- `handleUserRelaysEvent` (accountStore.ts 行2436) が `extractRelayConfigFromTags` でタグを `relaySettings` 化する。
+- リレー一覧が空の場合は `getDefaultRelays` / `handleDefaultRelaysEvent` (accountStore.ts 行810, 2466) のフォールバックで `get_default_relays` を使用する。
 
 ## 参考
-- https://github.com/PrimalHQ/primal-web-app/blob/main/src/sockets.tsx
-- https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/relays.ts
+- https://github.com/PrimalHQ/primal-web-app/blob/main/src/lib/profile.ts
 
 ---
 ← [README](../README.md)

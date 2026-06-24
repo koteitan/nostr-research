@@ -3,26 +3,25 @@
 # flowgazer リレー取得方法
 
 ## 結論
-- **リレー取得方法**: 設定→localStorage (単一リレー)
+- **リレー取得方法**: 設定→localStorage（単一リレー）。NIP-65/kind:10002 は未使用
 
 ## ソースコード
 
-**ファイル**: `app.js` (行 36-38, 69)
+**ファイル**: `app.js` (行 986-994)
 
 ```javascript
-const savedRelay = localStorage.getItem('relayUrl');
-const defaultRelay = 'wss://r.kojira.io/';
-const relay = savedRelay || defaultRelay;
-
-// URL保存
-localStorage.setItem('relayUrl', url);
+async connectRelay(url) {
+  try {
+    document.getElementById('relay-url').value = url;
+    await window.relayManager.connect(url);
+    localStorage.setItem('relayUrl', url);
+  } catch (err) { ... }
 ```
 
 ## 説明
-
-- 単一リレーアーキテクチャ
-- kind:10002 (NIP-65) は使用していない
-- `localStorage` の `relayUrl` キーで設定を保存
+- ホームタイムラインも接続中の単一リレーから取得する（`buildStreamPhaseFilters` で global/following/myposts などのフィルタを同一リレーに REQ）。
+- ユーザーが UI でリレーURLを変更すると `localStorage.relayUrl` に保存して再接続する。
+- アウトボックス/リレーリスト取得は行わない。
 
 ## 参考
 - https://github.com/ompomz/flowgazer/blob/main/app.js

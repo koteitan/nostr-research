@@ -3,7 +3,7 @@
 # iris リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: イベントごとに #e タグで購読 (closeOnEose)
+- **リアクション取得方法**: イベントごとに #e タグで kind:7 を購読し closeOnEose: true で取得 (useReactionsByAuthor)。同一作者は最新のみ保持。
 
 ## ソースコード
 
@@ -11,51 +11,28 @@
 
 ```typescript
 export function useReactionsByAuthor(eventId: string) {
-  const [reactionsByAuthor, setReactionsByAuthor] = useState<Map<string, NDKEvent>>(
-    new Map()
-  )
-
+  ...
   useEffect(() => {
     const filter = {
       kinds: [7],
       ["#e"]: [eventId],
     }
-
-    // Closed on eose because NDK will otherwise send too many concurrent REQs
+    // Closed on eose because NDK will otherwise send too many concurrent REQs ...
     const sub = ndk().subscribe(filter, {closeOnEose: true})
-
     sub?.on("event", (reactionEvent: NDKEvent) => {
       if (shouldHideUser(reactionEvent.author.pubkey)) return
-
-      const authorPubkey = reactionEvent.pubkey
-
-      // Update author's latest reaction
-      setReactionsByAuthor((prev) => {
-        const existing = prev.get(authorPubkey)
-        if (existing && existing.created_at! >= reactionEvent.created_at!) {
-          return prev
-        }
-        const newMap = new Map(prev)
-        newMap.set(authorPubkey, reactionEvent)
-        return newMap
-      })
+      ...
     })
-
-    return () => {
-      sub.stop()
-    }
+    return () => { sub.stop() }
   }, [eventId])
-
-  return reactionsByAuthor
-}
 ```
 
 ## 説明
-
-- 各イベントごとに `#e` タグフィルタでリアクションを購読
-- `closeOnEose: true` で初期データ取得後に購読を閉じる
-- 同じユーザーからの複数リアクションは最新のみ保持
-- ミュートユーザーのリアクションはフィルタリング
+- 個別投稿のリアクション収集は `useReactionsByAuthor` が担当し、`#e` タグに対象イベント ID を指定して kind:7 を購読する。
+- `closeOnEose: true` を指定することで EOSE 受信時に購読を閉じ、NDK が大量の同時 REQ を送らないようにしている。
+- 同一作者からのリアクションは最新のものだけを保持する。
+- ミュート対象ユーザー (`shouldHideUser`) のリアクションは除外される。
+- 別途 `src/shared/hooks/useReactionSubscription.ts` はフィードの人気判定用に kind:7/6 をまとめて購読する仕組みで、用途が異なる。
 
 ## 参考
 - https://github.com/irislib/iris-client/blob/main/src/shared/hooks/useReactions.ts

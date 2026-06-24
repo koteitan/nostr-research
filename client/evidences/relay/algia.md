@@ -3,55 +3,39 @@
 # algia リレー取得方法
 
 ## 結論
-- **リレー取得方法**: kind:10002 (NIP-65)
-- 設定ファイルで初期接続、kind:10002 で上書き
+- **リレー取得方法**: 設定ファイルの relays で初期接続し、その read リレーから kind:10002 (NIP-65 RelayListMetadata) を取得して上書きする
 
 ## ソースコード
 
-**ファイル**: `main.go` (行 168-230)
+**ファイル**: `main.go` (行 245-289)
 
 ```go
 // Get relay list metadata
 if !cfg.tempRelay {
-    if ev := cfg.pool.QuerySingle(ctx, relays, nostr.Filter{
-        Kinds:   []int{nostr.KindRelayListMetadata},  // kind 10002
-        Authors: []string{pub},
-        Limit:   1,
-    }); ev != nil {
-        rm := map[string]Relay{}
-        for _, r := range ev.Tags.GetAll([]string{"r"}) {
-            if len(r) == 2 {
-                rm[r[1]] = Relay{
-                    Read:  true,
-                    Write: true,
-                }
-            } else if len(r) == 3 {
-                switch r[2] {
-                case "read":
-                    rm[r[1]] = Relay{
-                        Read:  true,
-                        Write: false,
-                    }
-                case "write":
-                    rm[r[1]] = Relay{
-                        Read:  true,
-                        Write: true,
-                    }
-                }
-            }
-        }
-        cfg.Relays = rm
-    }
+	ctx, cancel := context.WithTimeout(context.Background(), relayMetadataTimeout)
+	if ev := cfg.pool.QuerySingle(ctx, relays, nostr.Filter{
+		Kinds:   []int{nostr.KindRelayListMetadata},
+		Authors: []string{pub},
+		Limit:   1,
+	}); ev != nil {
+		rm := map[string]Relay{}
+		for _, r := range ev.Tags.GetAll([]string{"r"}) {
+			...
+		}
+		...
+		if len(rm) > 0 {
+			cfg.Relays = rm
+		}
+	}
 }
 ```
 
-## 処理フロー
-
-1. まず設定ファイル (`~/.config/algia/config.json`) からリレーを読み込む
-2. kind:10002 (RelayListMetadata) イベントをクエリ
-3. kind:10002 が存在すればそれで既存の設定を上書き
-4. kind:10002 内の「r」タグからリレー URL 情報を抽出
-5. 「read」「write」フラグで読み書き権限を判定
+## 説明
+- 設定ファイルの `relays` で初期接続し、その read リレーへ問い合わせる。
+- kind:10002 (NIP-65 RelayListMetadata) の `r` タグから read/write を判定する。
+- kind:10002 が存在し、構築した `rm` が非空のときのみ `cfg.Relays` を上書きする。
+- 既存リレーの Search フラグは引き継ぐ。
+- `--relay` 指定時 (tempRelay) はメタデータを取得しない。
 
 ## 参考
 - https://github.com/mattn/algia/blob/main/main.go

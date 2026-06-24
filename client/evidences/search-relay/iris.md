@@ -3,75 +3,38 @@
 # iris 検索リレー
 
 ## 結論
-- **検索リレー**: なし (専用検索リレーは使用しない)
-- プロフィール検索: ローカル検索 (Fuse.js)
-- コンテンツ検索: 接続中のリレーに search フィルタを送信
+- **検索リレー**: 専用の検索リレーは無し。投稿検索は接続中のリレーへ NIP-50 search フィルタ + #t ハッシュタグフィルタを送信(buildSearchSubscriptionFilters)。プロフィール検索はローカル(Fuse.js)。
 
 ## ソースコード
 
-### コンテンツ検索 (投稿検索)
-
-**ファイル**: `src/shared/hooks/useFeedEvents.ts` (行 314-417)
+**ファイル**: `src/shared/hooks/buildSearchSubscriptionFilters.ts` (行 75-100)
 
 ```typescript
-if (filters.search) {
-  const searchTerms = filters.search.toLowerCase().split(/\s+/)
-  const hashtags: string[] = []
-  const regularWords: string[] = []
+const filterArray: NDKFilter[] = []
 
-  searchTerms.forEach((term) => {
-    if (term.startsWith("#") && term.length > 1) {
-      hashtags.push(term.substring(1))
-    } else if (term.length > 0) {
-      regularWords.push(term)
-    }
-  })
-
-  // For searches with regular words
-  if (regularWords.length > 0) {
-    // Also include search filter for relays that support full-text search
-    filterArray.push({
-      ...baseFilter,
-      search: regularWords.join(" "),
-    })
-  }
+if (regularWords.length > 0) {
+  // Plain recent notes fallback for relays without NIP-50 or word indexing.
+  filterArray.push(boundedBaseFilter)
 }
-
-const sub = ndk().subscribe(subscriptionFilters, relayUrls ? {relayUrls} : undefined)
-```
-
-### プロフィール検索 (ローカル)
-
-**ファイル**: `src/workers/profile-search.ts`
-
-- Fuse.jsを使用したメモリ内検索インデックス
-- Dexieデータベース（IndexedDB）にキャッシュされたプロフィール情報を検索
-
-### デフォルトリレー
-
-**ファイル**: `src/shared/constants/relays.ts`
-
-```typescript
-const PRODUCTION_RELAYS = [
-  "wss://temp.iris.to/",
-  "wss://vault.iris.to/",
-  "wss://relay.damus.io/",
-  "wss://relay.snort.social/",
-  "wss://nos.lol/",
-]
+if (hashtags.length > 0) {
+  filterArray.push({...boundedBaseFilter, "#t": buildHashtagVariants(filters.search, hashtags)})
+}
+if (regularWords.length > 0) {
+  filterArray.push({...boundedBaseFilter, "#t": regularWords})
+  filterArray.push({...boundedBaseFilter, search: regularWords.join(" ")})
+}
+return dedupeFilters(filterArray)
 ```
 
 ## 説明
-
-- 専用の検索リレーはハードコードされていない
-- コンテンツ検索: 接続中のリレーに `search` フィルタを送信
-- プロフィール検索: ローカルのFuse.js検索を使用
-- ハッシュタグは `#t` タグフィルタに変換
-- クライアント側でも検索結果をフィルタリング
+- 専用の検索リレーは持たず、接続中のリレーへ検索フィルタを送信する。
+- 検索ロジックは旧 `useFeedEvents.ts` から `buildSearchSubscriptionFilters.ts` に分離された。
+- NIP-50 非対応リレー向けに、通常の最近の投稿フォールバックと `#t` フィルタも併用する。
+- 取得結果はクライアント側で再フィルタする(`useFeedEvents.ts` 173-)。
+- プロフィール検索は `src/workers/profile-search.ts` の Fuse.js(Dexie/IndexedDB キャッシュ対象)で行う。
 
 ## 参考
-- https://github.com/irislib/iris-client/blob/main/src/shared/hooks/useFeedEvents.ts
-- https://github.com/irislib/iris-client/blob/main/src/workers/profile-search.ts
+- https://github.com/irislib/iris-client/blob/main/src/shared/hooks/buildSearchSubscriptionFilters.ts
 
 ---
 ← [README](../README.md)

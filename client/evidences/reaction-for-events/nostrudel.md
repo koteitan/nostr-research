@@ -3,54 +3,25 @@
 # noStrudel リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: applesauce-loaders でイベントごとに取得
+- **リアクション取得方法**: イベントごとに `ReactionsModel` でローカル event store からリアクション(kind:7)を取得する方式。以前は applesauce-loaders の `reactionsLoader` で都度ロードしていたが、現行は `events.model(ReactionsModel, event)` でストアを購読する形に変更されている(`reactionsLoader` 自体は残るが UI からは直接呼ばれていない)。
 
 ## ソースコード
 
-**ファイル**: `src/hooks/use-event-reactions.ts`
+**ファイル**: `src/models/reactions.ts` (行 5-7)
 
 ```typescript
-import { ReactionsQuery } from "../models/reactions";
-
-export default function useEventReactions(event?: NostrEvent, relays?: string[]) {
-  return useEventModel(ReactionsQuery, event ? [event, relays] : undefined);
+export function ReactionsQuery(event: NostrEvent, _relays?: string[]): Model<NostrEvent[]> {
+  return (events) => events.model(ReactionsModel, event);
 }
-```
-
-**ファイル**: `src/models/reactions.ts`
-
-```typescript
-import { reactionsLoader } from "../services/loaders";
-
-export function ReactionsQuery(event: NostrEvent, relays?: string[]): Model<NostrEvent[]> {
-  return (events) =>
-    defer(() => reactionsLoader(event, relays)).pipe(
-      ignoreElements(),
-      mergeWith(events.reactions(event))
-    );
-}
-```
-
-**ファイル**: `src/services/loaders.ts` (行 66-70)
-
-```typescript
-export const reactionsLoader = createReactionsLoader(pool, {
-  cacheRequest,
-  eventStore,
-  extraRelays: localSettings.fallbackRelays,
-});
 ```
 
 ## 説明
-
-- applesauce-loaders の createReactionsLoader を使用
-- 各イベントごとにリアクションを取得 (#e タグフィルタ)
-- extraRelays として fallbackRelays を追加
-- eventStore にキャッシュ
+- `useEventReactions`(`src/hooks/use-event-reactions.ts`)→ `ReactionsQuery` → applesauce-common の `ReactionsModel` という経路でリアクションを取得する。
+- リアクション取得は applesauce ライブラリ側の event store / loader 機構に委譲され、ストアを購読する形でリアクション(kind:7)を集める。
+- 第2引数 `relays` は現在未使用(`_relays`)。`extraRelays`=`fallbackRelays` は `src/services/loaders.ts:72-76` に定義されるが、現状 UI には配線されていない。
 
 ## 参考
-- https://github.com/hzrd149/nostrudel/blob/main/src/hooks/use-event-reactions.ts
-- https://github.com/hzrd149/nostrudel/blob/main/src/services/loaders.ts
+- https://github.com/hzrd149/nostrudel/blob/master/src/models/reactions.ts
 
 ---
 ← [README](../README.md)

@@ -1,29 +1,29 @@
 ← [README](../README.md)
 
-# ぬるぬる (nullnull) リアクション取得方法
+# ぬるぬる リアクション取得方法
 
 ## 結論
-- **リアクション取得方法**: バッチ取得 (limit: 500)
+- **リアクション取得方法**: バッチ取得 (kind:7 を #e でまとめて limit:500)
 
 ## ソースコード
 
-**ファイル**: `components/TimelineTab.js` (行 399)
+**ファイル**: `components/TimelineTab.js` (行 506-512)
 
 ```javascript
-fetchEvents({ kinds: [7], '#e': eventIds, limit: 500 }, readRelays),
-```
-
-**ファイル**: `components/HomeTab.js` (行 407)
-
-```javascript
-{ kinds: [7], '#e': allPostIds, limit: 500 },
+// Fetch reactions
+if (pubkey && allPosts.length > 0) {
+  const eventIds = allPosts.map(p => p.id)
+  const [reactionEvents, myRepostEvents] = await Promise.all([
+    fetchEvents({ kinds: [7], '#e': eventIds, limit: 500 }, readRelays),
+    fetchEvents({ kinds: [6], authors: [pubkey], limit: 100 }, readRelays)
+  ])
 ```
 
 ## 説明
-
-- 複数の投稿IDをまとめて `#e` タグでフィルタ
-- `limit: 500` で取得
-- バッチ処理でリアクションを取得
+- タイムライン読込後、表示中の投稿IDをまとめて `#e` タグでフィルタし、kind:7 を limit:500 で一括取得(バッチ)。
+- フィルタ定義は `lib/filters.js` の `createReactionFilter` (kinds:[7], #e, limit=500)。
+- `HomeTab.js`(行487)でも同様に kind:7 を #e/limit:500 で取得。
+- リポスト(kind:6)も `Promise.all` で併せて取得。
 
 ## 参考
 - https://github.com/tami1A84/null--nostr/blob/main/components/TimelineTab.js

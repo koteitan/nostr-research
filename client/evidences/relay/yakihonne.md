@@ -1,57 +1,32 @@
 ← [README](../README.md)
 
-# yakihonne リレー取得方法
+# Yakihonne リレー取得方法
 
 ## 結論
-- **リレー取得方法**: Outboxモデル (kind:10002 NIP-65)
+- **リレー取得方法**: Outboxモデル (NIP-65 kind:10002)。ユーザの kind:10002 リレーリストを取得し、無ければ relaysOnPlatform にフォールバック
 
 ## ソースコード
 
-**ファイル**: `src/Helpers/NDKInstance.js`
+**ファイル**: `src/Components/AppInit.js` (行 592-598)
 
-```javascript
-const ndkInstance = new NDK({
-  explicitRelayUrls: relaysOnPlatform,
-  enableOutboxModel: true,
-  // ...
-});
-```
-
-**ファイル**: `src/Hooks/useOutboxRelays.js`
-
-```javascript
-const useOutboxRelays = () => {
-  const [outboxRelays, setOutboxRelays] = useState([]);
-  const userFollowingsRelays = useSelector(state => state.userFollowingsRelays)
-
-  useEffect(() => {
-    if (!(userFollowingsRelays.length > 0)) return;
-    let allRelays = [
-      ...new Set(userFollowingsRelays.map((relay) => relay.relays.map(_ => _.url)).flat()),
-    ];
-    let relaysStats = allRelays.map((relay) => {
-      return {
-        url: relay,
-        pubkeys: userFollowingsRelays.filter((user) => user.relays.find(_ => _.url === relay))
-          .map((user) => user.pubkey)
-      }
-    }).sort((a, b) => b.pubkeys.length - a.pubkeys.length)
-    setOutboxRelays(relaysStats);
-  }, [userFollowingsRelays]);
-
-  return { outboxRelays };
-};
+```js
+{
+  kinds: [10002],
+  authors: [userKeys.pub],
+  since: lastRelaysTimestamp
+    ? lastRelaysTimestamp + 1
+    : lastRelaysTimestamp,
+},
 ```
 
 ## 説明
-
-- NDK の enableOutboxModel が有効
-- フォローのリレー情報を収集して outboxRelays を構築
-- リレーごとの pubkey 数でソート
+- ユーザの kind:10002 (NIP-65 リレーリスト) を `authors: [userKeys.pub]` で購読して取得する。
+- AppInit.js 行242-258で取得した kind:10002 から read/write リレーを抽出し `setUserRelays` に設定する。
+- リレーリストが空の場合は `relaysOnPlatform` にフォールバックする。
+- NDK の `enableOutboxModel` と `useOutboxRelays.js` により、フォロー先の kind:10002 から `outboxRelays` を pubkey 数順に構築する。
 
 ## 参考
-- https://github.com/nicehashdev/yakihonne-web-app/blob/main/src/Helpers/NDKInstance.js
-- https://github.com/nicehashdev/yakihonne-web-app/blob/main/src/Hooks/useOutboxRelays.js
+- https://github.com/YakiHonne/web-app/blob/main/src/Components/AppInit.js
 
 ---
 ← [README](../README.md)

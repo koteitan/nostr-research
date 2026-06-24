@@ -3,74 +3,33 @@
 # Lumilumi 検索リレー
 
 ## 結論
-- **検索リレー (NIP-50)**: relay.nostr.band, search.nos.today
-- **ユーザー設定**: kind:10007 でカスタマイズ可能
+- **検索リレー**: NIP-50 全文検索用リレー `nip50relays`: `search.nos.today`, `nostr.wine`, `cagliostr.compile-error.net`（`relay.nostr.band` は現在コメントアウト）。
+- ユーザは kind:10007 (Search Relays List) でカスタム検索リレーを設定可能で、存在すればそちらを優先。
 
 ## ソースコード
 
-**ファイル**: `src/lib/func/constants.ts`
+**ファイル**: `src/lib/func/constants.ts` (行 49-56)
 
-```typescript
+```ts
 export const nip50relays = [
-  "wss://relay.nostr.band",
+  //"wss://relay.nostr.band", //クソ長フィルターのとき（only foloweeのとき）nodataになる
   "wss://search.nos.today",
-  // "wss://relay.noswhere.com", // コメントアウト
-  // "wss://bostr.nokotaro.com", // コメントアウト
-  // "wss://nostr.wine",         // コメントアウト
+  // "wss://relay.noswhere.com",
+  //"wss://bostr.nokotaro.com",
+  "wss://nostr.wine",
+  "wss://cagliostr.compile-error.net",
 ];
 ```
 
-**ファイル**: `src/routes/search/+page.svelte` (行 21, 44, 97-134)
-
-```typescript
-import { nip50relays } from "$lib/func/constants";
-
-let searchRelays = $state(nip50relays);
-
-const setSearchRelay = async () => {
-  const data: string[] | undefined = queryClient.getQueryData([
-    "searchRelay",
-    lumiSetting.get().pubkey,
-  ]);
-
-  if (data) {
-    searchRelays = data;
-  } else {
-    // kind:10007 (Search Relays List) を取得
-    const fetchRelays = await usePromiseReq(
-      {
-        filters: [
-          { authors: [lumiSetting.get().pubkey], kinds: [10007], limit: 1 },
-        ] as Nostr.Filter[],
-        operator: pipe(latest()),
-      },
-      undefined,
-      undefined
-    );
-
-    if (fetchRelays.length > 0) {
-      const relaylist = toGlobalRelaySet(fetchRelays[0].event);
-      if (relaylist.length > 0) {
-        searchRelays = relaylist;
-      }
-    }
-  }
-};
-```
-
 ## 説明
-
-- NIP-50 検索対応リレー: `relay.nostr.band`, `search.nos.today`
-- ユーザーは kind:10007 (Search Relays List) でカスタム検索リレーを設定可能
-- kind:10007 が存在する場合はそちらを優先
-- 設定がない場合は `nip50relays` をデフォルトとして使用
-
-## 注意
-`relaySearchRelays` (directory.yabu.me, purplepag.es 等) はユーザープロフィール/リレーリスト検索用であり、NIP-50 ワード検索用ではない。
+- デフォルトの検索リレーは `nip50relays`（`search.nos.today`, `nostr.wine`, `cagliostr.compile-error.net`）。
+- `relay.nostr.band` は「クソ長フィルターのとき nodata になる」ためコメントアウトされている。
+- kind:10007 (Search Relays List) の取得・適用は `src/routes/search/+page.svelte` の `setSearchRelay`（101-141行）で行われる。
+- ユーザの kind:10007 が存在すれば `toGlobalRelaySet` でデフォルトを上書きし、そちらを優先する。
+- 旧調査からの変更点: `relay.nostr.band` を除外し、`nostr.wine` と `cagliostr.compile-error.net` を追加。
 
 ## 参考
 - https://github.com/TsukemonoGit/lumilumi/blob/main/src/lib/func/constants.ts
-- https://github.com/TsukemonoGit/lumilumi/blob/main/src/routes/search/+page.svelte
 
 ---
 ← [README](../README.md)

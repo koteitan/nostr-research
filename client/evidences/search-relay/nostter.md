@@ -1,107 +1,34 @@
 ← [README](../README.md)
 
-# nostter 検索機能のリレー調査結果
+# nostter 検索リレー
 
-## 調査対象
-- リポジトリ: https://github.com/SnowCait/nostter
-- 調査日: 2025-12-21
+## 結論
+- **検索リレー**: nostr.wine, search.nos.today
+- 環境変数 `VITE_SEARCH_RELAYS` で上書き可能（カンマ区切り）
+- `filter.search` 指定時や検索ページのキーワード検索時にこのリレーを使用
 
-## 検索機能で使用されているリレー
+## ソースコード
 
-### 検索専用リレー
-nostterの検索機能では、以下の2つの専用リレーを使用しています。
-
-**定義場所**: `/web/src/lib/Constants.ts`
+**ファイル**: `web/src/lib/Constants.ts` (行 132-136)
 
 ```typescript
-export const searchRelays = ['wss://relay.nostr.band/', 'wss://search.nos.today/'];
+const searchRelayUrls = import.meta.env.VITE_SEARCH_RELAYS
+	? import.meta.env.VITE_SEARCH_RELAYS.split(',')
+	: ['wss://nostr.wine/', 'wss://search.nos.today/'];
+
+export const searchRelays = searchRelayUrls.map((url) => url.trim());
 ```
 
-### 検索リレーの使用方法
+## 説明
+- デフォルトの検索リレーは `nostr.wine` と `search.nos.today` の 2 つ。
+- 環境変数 `VITE_SEARCH_RELAYS` が設定されていればカンマ区切りで上書きでき、各 URL は trim される。
+- `web/src/lib/Search.ts`（186行）では `filter.search` の有無で `searchRelays` か `readRelays` を切り替える。
+- `web/src/lib/timelines/SearchTimeline.svelte.ts`（66行）でも検索リレーを参照する。
+- `web/src/routes/(app)/search/+page.svelte`（124行）ではキーワードがある場合（`hasKeyword`）のみ検索リレーを使用する。
+- 前回調査時の `relay.nostr.band` が削除され `nostr.wine` に置き換わった。
 
-**実装場所**: `/web/src/lib/Search.ts`
-
-Search クラスの `fetch` メソッド内で以下のロジックにより、検索クエリに `search` パラメータが含まれている場合は専用の検索リレーを使用し、それ以外の場合はユーザーの読み取りリレーを使用します。
-
-```typescript
-async fetch(filter: Filter): Promise<EventItem[]> {
-    const events = await fetchEvents(
-        [filter],
-        filter.search !== undefined ? searchRelays : get(readRelays)
-    );
-    // ...
-}
-```
-
-## 検索リレーの詳細
-
-### 1. relay.nostr.band
-- URL: `wss://relay.nostr.band/`
-- 用途: 検索機能、およびデフォルトリレーの一つとしても使用
-- 特徴: 汎用的な検索に対応
-
-### 2. search.nos.today
-- URL: `wss://search.nos.today/`
-- 用途: 検索専用
-- 特徴: 検索に特化したリレー
-
-## その他のリレー設定
-
-nostterでは検索リレー以外にも、以下のような用途別リレーを定義しています。
-
-### デフォルトリレー
-```typescript
-export const defaultRelays = [
-    { url: 'wss://relay.nostr.band/', read: true, write: true },
-    { url: 'wss://nos.lol/', read: true, write: true },
-    { url: 'wss://relay.damus.io/', read: true, write: true }
-];
-```
-
-### メタデータリレー（プロフィール情報用）
-```typescript
-export const metadataRelays = [
-    'wss://purplepag.es/',
-    'wss://user.kindpag.es/',
-    'wss://directory.yabu.me/'
-];
-```
-
-### トレンドリレー
-```typescript
-export const trendRelays = ['wss://nostrbuzzs-relay.fly.dev/'];
-```
-
-### パブリックリレー（スパム対策済み）
-```typescript
-export const publicRelays = [
-    'wss://nostr.wine/',
-    'wss://relay.snort.social/',
-    'wss://wot.utxo.one/',
-    'wss://nostrelites.org/'
-];
-```
-
-### 日本語ローカライズ用リレー
-```typescript
-export const localizedRelays = {
-    ja: [
-        { url: 'wss://relay-jp.nostr.wirednet.jp/', read: true, write: true },
-        { url: 'wss://yabu.me/', read: true, write: true },
-        { url: 'wss://r.kojira.io/', read: true, write: true },
-        { url: 'wss://nrelay-jp.c-stellar.net/', read: true, write: true }
-    ]
-};
-```
-
-## まとめ
-
-nostterの検索機能は、以下の2つの専用検索リレーを使用しています：
-
-1. **wss://relay.nostr.band/** - 汎用検索リレー（デフォルトリレーとしても使用）
-2. **wss://search.nos.today/** - 検索専用リレー
-
-これらのリレーは、検索クエリに `search` パラメータが含まれている場合に自動的に選択され、効率的な全文検索を提供します。検索パラメータがない場合は、ユーザーが設定した通常の読み取りリレーが使用されます。
+## 参考
+- https://github.com/SnowCait/nostter/blob/main/web/src/lib/Constants.ts
 
 ---
 ← [README](../README.md)
