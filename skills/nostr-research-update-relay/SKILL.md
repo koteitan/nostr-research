@@ -119,15 +119,22 @@ e.g. nostr-rs-relay has no default max limit; strfry sets no default event-send 
 Record the absence, not a failure.
 
 ### 6. The README has two LIVE-DATA bits beyond the source
-- **リレーランキング** table comes from <https://nostr.watch/relays/software> — refetch
-  it and update the `(YYYY/MM/DD)` date. (If nostr.watch is unreachable, keep the prior
-  table and note the date is stale.)
-- **バージョン情報** — bump `ドキュメントバージョン`, set `確認日` to today, and list each
-  relay's full commit hash + date from step 1.
+- **リレーランキング** table comes from <https://nostr.watch/relays/software>. Its date is
+  a **Last Checked** date, not a last-changed date — it expresses how recently the ranking
+  was verified, so **always set it to the run date (today)**, even when the numbers are
+  unchanged. Label it `(Last Checked: YYYY/MM/DD)` in both READMEs. Try to refetch the
+  numbers (nostr.watch is a JS SPA, hard to scrape) and refresh them if you can; if not,
+  carry the prior table forward but still stamp today's Last Checked date.
+- **バージョン情報** — bump `ドキュメントバージョン`, set the `Last Checked` line to today,
+  and list each relay's full commit hash + date from step 1.
 
-### 7. Dates
-Use today's date (project `CLAUDE.md` → currentDate) for `確認日` / `リレーランキング (…)`
-and each evidence "確認バージョン" date.
+### 7. Dates — use "Last Checked" semantics
+Every survey/verification date in these docs is a **Last Checked** date (when the research
+was last run), not a last-changed date — always stamp it with today's date (project
+`CLAUDE.md` → currentDate) even when nothing changed, to express how fresh the check is.
+This covers the バージョン情報 `Last Checked` line, the `リレーランキング (Last Checked: …)`
+heading, and (Part B) the relay-instances `Last Checked:` line. The evidence files'
+"確認バージョン" is a different thing — that carries the pinned commit + its commit date.
 
 ### 8. Keep diff-from-previous-research OUT of the summary READMEs (evidence files MAY keep it)
 Same rule as the client skill: `relay/README-ja.md` and `relay/README-en.md` describe the
@@ -225,8 +232,9 @@ If a relay times out or drops NIP-11, mark its row (e.g. software "—") and not
 than deleting the row. Some relays change software/limits between runs — that is exactly
 what this survey captures, but the README is current-state only (no diff prose).
 
-### 4. Dates
-Set `調査日:` / `Survey Date:` to today (project `CLAUDE.md` → currentDate).
+### 4. Dates — "Last Checked"
+Set the `Last Checked:` line to today (project `CLAUDE.md` → currentDate) on every run,
+even if nothing changed — it records when the survey was last verified.
 
 ## Phase 3 — query: 1 agent (or 1 per instance)
 A single agent can `curl` all ~11 instances (they're cheap). To be robust against one
@@ -237,7 +245,7 @@ max_subid_length, max_event_tags, max_content_length }` (use `-` for missing).
 ## Phase 4 — write: 2 README writers
 One writes `relay-instances/README-ja.md`, one writes `relay-instances/README-en.md`,
 each rebuilding the single limitation table (same columns + the `-` note + the top
-back/lang link line) and the `調査日` / `Survey Date` line.
+back/lang link line) and the `Last Checked:` line.
 
 ---
 
