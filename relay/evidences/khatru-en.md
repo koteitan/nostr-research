@@ -3,7 +3,7 @@
 # khatru
 
 ## Overview
-- **Language**: Go
+- **Language**: Go (framework)
 - **Type**: Framework
 - **Config**: Codebase, no config file
 - **Repository**: https://github.com/fiatjaf/khatru
@@ -18,8 +18,8 @@
 **Behavior**:
 - No built-in max limit enforcement in the framework
 - Developers need to implement their own limit policies
-- Framework handles `LimitZero` flag to skip queries with `limit: 0`
-- Actual limit enforcement depends on relay implementations using Khatru
+- Framework handles the `LimitZero` flag to skip queries with `limit: 0`
+- Actual limit enforcement depends on the relay implementation using khatru
 - Provides rate limiting helpers but no result cap
 
 **Source Code Evidence**:
@@ -35,14 +35,14 @@ MaxMessageSize: 512000,
 
 ## Rate Limiting
 
-### Default Rate Limits (via `ApplySaneDefaults`)
+Framework. Default rate limits take effect when [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) is applied. Max subscriptions is not enforced at the framework level.
 
 | Item | Value | Source |
 |------|-------|--------|
 | Max Subscriptions | No limit | - |
-| Event Rate | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L12) (max 10 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
-| Filter Rate | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L17) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
-| Connection Rate | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L21) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
+| Event Rate | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L12) (max 10 tokens) | Framework. Via [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
+| Filter Rate | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L17) (max 100 tokens) | Framework. Via [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
+| Connection Rate | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L21) (max 100 tokens) | Framework. Via [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
 
 ## Time-based Restrictions
 
@@ -52,8 +52,11 @@ MaxMessageSize: 512000,
 |------|-------|
 | Max Future Offset | Not enforced |
 | Max Past Offset | Not enforced |
+| Ephemeral Age | - |
+| Ephemeral Lifetime | - |
+| Normal Max Age | - |
 
-**Notes**: Framework does not enforce by default
+**Notes**: The framework does not validate `created_at` by default. The `policies` package provides [`PreventTimestampsInTheFuture`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L98) / [`PreventTimestampsInThePast`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L88) helpers, but they are not applied by `ApplySaneDefaults`. Event storage/deletion policies are implementation-dependent.
 
 ## Filter Value Limits
 
@@ -63,20 +66,24 @@ MaxMessageSize: 512000,
 | Max Filters per REQ | No limit | - |
 | Max authors (approx.) | ~7,400 (WebSocket limit) | - |
 
-**Notes**: No default filter value limit in framework; message size is the effective cap
+**Notes**: No default filter value limit in the framework. The message size limit ([512,000 bytes (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b98/relay.go#L45)) is the effective cap.
 
 ## Size Limits
 
 | Item | Value | Config |
 |------|-------|--------|
-| Max Message Size | [512,000 bytes (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b982/relay.go#L45) | `MaxMessageSize` |
+| Max Message Size | [512,000 bytes (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b98/relay.go#L45) | `MaxMessageSize` |
+
+## Supported NIPs
+
+Not applicable (no specific NIP list because it is a framework)
 
 ## Framework Features
 
 - Custom event/filter acceptance policies
 - Custom AUTH handlers
 - Pluggable storage backends
-- Built-in policy helpers in `policies` package
+- Built-in policy helpers in the `policies` package
 
 ---
 [<< back](../README-en.md)

@@ -6,11 +6,11 @@
 - **Language**: C++
 - **Config File**: `strfry.conf`
 - **Repository**: https://github.com/hoytech/strfry
-- **Verified Version**: `542552ab0f5234f808c52c21772b34f6f07bec65` (2025-01-10)
+- **Verified Version**: `b80cda3a812af1b662223edad47eb70b053508b6` (2026-06-22)
 
 ## Limit Parameter
 
-**Default Max Limit**: [500](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L91)
+**Default Max Limit**: [500](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L111)
 
 **Config Parameter**: `relay.maxFilterLimit`
 
@@ -30,12 +30,12 @@ relay {
 
 | Item | Value | Config |
 |------|-------|--------|
-| Max Subscriptions | [20](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L89) | `relay.maxSubsPerConnection` |
-| Event Submission Rate | Not configured by default | Configurable |
-| Filter/REQ Rate | Not configured | Configurable |
-| Connection Rate | Not configured | Configurable |
+| Max Subscriptions | [200](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L120) | `relay.maxSubsPerConnection` |
+| Event Submission Rate | Not configured by default | Not configured |
+| Filter/REQ Rate | Not configured | Not configured |
+| Connection Rate | Not configured | Not configured |
 
-**Notes**: All limits are configurable
+**Notes**: `relay.maxSubsPerConnection` limits the number of concurrent REQs per connection. Event submission/filter/connection rates are not configured in the core settings (handle them with an external reverse proxy, etc.). The max number of subscriptions defaults to 200; there is no core setting for an explicit event submission rate, filter rate, or connection rate.
 
 ## Time-based Restrictions
 
@@ -43,41 +43,41 @@ relay {
 
 | Item | Value |
 |------|-------|
-| Max Future Offset | [+900 sec (15 min)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L24) |
-| Max Past Offset | [-94,608,000 sec (~3 years)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L27) |
+| Max Future Offset | [+900 sec (15 min)](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L24) |
+| Max Past Offset | [-94,608,000 sec (~3 years)](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L27) |
 
 ### Event Retention/Deletion Policy
 
 | Item | Value |
 |------|-------|
-| Ephemeral Event Age | Reject if older than [60 sec](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L30) |
-| Ephemeral Event TTL | Auto-delete after [300 sec](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L33) |
+| Ephemeral Event Age | Reject if older than [60 sec](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L30) |
+| Ephemeral Event TTL | Auto-delete after [300 sec](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L33) |
 | Regular Event Max Age | - |
 
-**Notes**: Kind 20000-29999 only
+**Notes**: Ephemeral event restrictions apply only to Kind 20000-29999. `rejectEventsNewerThanSeconds`/`rejectEventsOlderThanSeconds` validate the future/past offset of `created_at` and reject out-of-range events.
 
 ## Filter Value Limits
 
 | Item | Value | Config |
 |------|-------|--------|
 | Filter Value Limit | No limit | - |
-| Max Filters per REQ | [200](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L79) | `relay.maxReqFilterSize` |
+| Max Filters per REQ | [200](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L99) | `relay.maxReqFilterSize` |
 | Max authors (approx.) | ~1,900 (WebSocket limit) | - |
 
-**Notes**: No explicit filter value limit; message size is the effective cap
+**Notes**: There is no explicit filter value limit; the message size limit such as the WebSocket payload (128 KB) is the effective cap. `relay.maxTagsPerFilter` (default 3) also limits the number of tag filters per filter.
 
 ## Size Limits
 
 | Item | Value | Config |
 |------|-------|--------|
-| Event Size | [65,536 bytes (64 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L21) | `events.maxEventSize` |
-| WebSocket Payload | [131,072 bytes (128 KB)](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L76) | `relay.maxWebsocketPayloadSize` |
-| Tag Value Size | [1,024 bytes](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L39) | `events.maxTagValSize` |
-| Max Tags | [2,000](https://github.com/hoytech/strfry/blob/542552ab/strfry.conf#L36) | `events.maxNumTags` |
+| Event Size | [65,536 bytes (64 KB)](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L21) | `events.maxEventSize` |
+| WebSocket Payload | [131,072 bytes (128 KB)](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L96) | `relay.maxWebsocketPayloadSize` |
+| Tag Value Size | [1,024 bytes](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L39) | `events.maxTagValSize` |
+| Max Tags | [2,000](https://github.com/hoytech/strfry/blob/b80cda3/strfry.conf#L36) | `events.maxNumTags` |
 
 ## Supported NIPs
 
-1, 2, 4, 9, 11, 22, 28, 40, 70, 77
+1, 2, 4, 9, 11, 28, 40, 45, 70, 77
 
 ---
 [<< back](../README-en.md)

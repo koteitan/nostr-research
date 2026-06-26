@@ -40,9 +40,9 @@ MaxMessageSize: 512000,
 | 項目 | 値 | ソース |
 |------|-----|--------|
 | 最大サブスクリプション数 | 制限なし | - |
-| イベントレート | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L12) (max 10 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
-| フィルターレート | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L17) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
-| 接続レート | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L21) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b982/policies/sane_defaults.go#L9) |
+| イベントレート | [2 events/3min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L12) (max 10 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
+| フィルターレート | [20 filters/min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L17) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
+| 接続レート | [1 conn/5min](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L21) (max 100 tokens) | [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) |
 
 ## 時間ベースの制限
 
@@ -53,7 +53,7 @@ MaxMessageSize: 512000,
 | 最大未来オフセット | 強制なし |
 | 最大過去オフセット | 強制なし |
 
-**備考**: フレームワークはデフォルトでは強制しない
+**備考**: フレームワークはデフォルトでは `created_at` を検証しない。`policies` パッケージは [`PreventTimestampsInTheFuture`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L98) / [`PreventTimestampsInThePast`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L88) ヘルパーを提供するが、`ApplySaneDefaults` では適用されない。イベント保存/削除ポリシーは実装依存。
 
 ## フィルター値制限
 
@@ -63,13 +63,17 @@ MaxMessageSize: 512000,
 | REQあたり最大フィルター数 | 制限なし | - |
 | 最大authors数 (概算) | ~7,400 (WebSocket制限による) | - |
 
-**備考**: フレームワークにデフォルトのフィルター値制限なし、メッセージサイズ制限が実質的な上限
+**備考**: フレームワークにデフォルトのフィルター値制限なし。メッセージサイズ制限 ([512,000バイト (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b98/relay.go#L45)) が実質的な上限となる。
 
 ## サイズ制限
 
 | 項目 | 値 | 設定 |
 |------|-----|------|
-| 最大メッセージサイズ | [512,000バイト (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b982/relay.go#L45) | `MaxMessageSize` |
+| 最大メッセージサイズ | [512,000バイト (500 KB)](https://github.com/fiatjaf/khatru/blob/9f99b98/relay.go#L45) | `MaxMessageSize` |
+
+## サポートNIP
+
+該当なし (フレームワークのため固有のNIPリストなし)
 
 ## フレームワーク機能
 
