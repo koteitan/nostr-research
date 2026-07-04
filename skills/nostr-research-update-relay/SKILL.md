@@ -23,7 +23,7 @@ Run them as two separate workflows; they share nothing.
 
 ```
 relay/
-  README-ja.md            # one document: ranking + limit/rate/filter+size/time tables + 詳細分析 + 参考文献 + version info
+  README-ja.md            # one document: 目次 + ranking + limit/rate/filter+size/time tables + 参考文献 + version info
   README-en.md            # English mirror
   evidences/
     <relay>.md            # Japanese, per relay
@@ -183,7 +183,15 @@ After all 6 reports are in, spawn writers. **One agent writes exactly one md fil
 - **2 README writers** — `relay/README-ja.md` and `relay/README-en.md`. Each receives
   **all 6 reports** + the nostr.watch ranking, and rebuilds every section: リレーランキング,
   limit パラメータ table, レート制限 table, フィルター値とメッセージサイズ制限 (3 sub-tables),
-  時間ベースの制限 (2 sub-tables), 詳細分析 (per-relay prose), 参考文献, バージョン情報.
+  時間ベースの制限 (2 sub-tables), 参考文献, バージョン情報.
+  Per-relay detail lives ONLY in the evidence files — do NOT add a 詳細分析 / per-relay-prose
+  section to the README (the summary tables already link each relay row to its evidence file).
+  サポートNIP is NOT tabulated in the README; the 参考文献 nostr.watch line
+  (<https://nostr.watch/relays/software>) covers per-implementation NIP support.
+  README-ja.md additionally begins with a `## 目次` in-page TOC (level-1 `##` sections only)
+  right after the title — preserve/regenerate it. Its リレーランキング anchor embeds the
+  Last Checked date (e.g. `#リレーランキング-last-checked-20260626`), so update that one TOC
+  link whenever the ranking date changes.
   Cells use current-state facts only — never `changeNote` (learning 8). Preserve the exact
   column headers shown in the current README.
 

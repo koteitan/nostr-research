@@ -2,6 +2,15 @@
 
 # Nostr リレー仕様
 
+## 目次
+- [リレーランキング](#リレーランキング-last-checked-20260626)
+- [limit パラメータの動作](#limit-パラメータの動作)
+- [レート制限](#レート制限)
+- [フィルター値とメッセージサイズ制限](#フィルター値とメッセージサイズ制限)
+- [時間ベースの制限](#時間ベースの制限)
+- [参考文献](#参考文献)
+- [バージョン情報](#バージョン情報)
+
 ## リレーランキング (Last Checked: 2026/06/26)
 
 出典: [nostr.watch](https://nostr.watch/relays/software)
@@ -145,224 +154,6 @@ pubkey 1件 = 64文字 (hex) + 約3文字 (引用符・カンマ) ≈ 67 bytes �
 ---
 
 
-## 詳細分析
-
-### 1. strfry (C++)
-
-**設定ファイル:** `strfry.conf`
-
-**デフォルト設定:**
-```conf
-relay {
-    # Maximum records that can be returned per filter
-    maxFilterLimit = 500
-}
-```
-
-**動作:**
-- クライアントが `limit: N` でイベントをリクエストした場合、strfryはフィルターごとに **min(N, 500)** 件のイベントを返す
-- クライアントがlimitを指定しないか、500より大きいlimitを指定した場合、strfryは500に制限
-- これはサブスクリプションごとではなく、フィルターごとの制限
-
-**レート制限:**
-- 最大サブスクリプション数（接続あたりの同時REQ数）: 200 (`relay.maxSubsPerConnection`)
-- イベント送信レート/フィルターレート/接続レートはコア設定としては未設定
-
-**サイズ制限:**
-- イベントサイズ: 65,536バイト (64 KB) - 正規化JSON
-- WebSocketペイロード: 131,072バイト (128 KB)
-- タグ値サイズ: 1,024バイト
-- 最大タグ数: 2,000
-- REQごとの最大フィルター数: 200
-
-**時間制限:**
-- 未来に900秒 (15分) を超えるイベントを拒否
-- 94,608,000秒 (約3年) より古いイベントを拒否
-- 60秒より古い一時イベントを拒否
-- 一時イベント生存期間: 300秒 (5分)
-
-**サポートNIP:** 1, 2, 4, 9, 11, 28, 40, 45, 70, 77（NIP-45はCOUNTが有効な場合、NIP-77はnegentropyが有効な場合、NIP-42はAUTHの`serviceUrl`を設定した場合に追加される）
-
----
-
-### nostream
-
-nostreamはTypeScriptで実装されたリレーで、設定はすべて `resources/default-settings.yaml` に集約されており、7つの観点すべてがファイル単位で版管理されている。確認バージョンは `33f0ba9` (2026-06-25)。
-
-**limitパラメータ**: デフォルトの最大limitは `limits.client.subscription.maxLimit: 5000` で、クライアントが `limit: N` を指定すると `min(N, 5000)` 件が返される。あわせて最大同時サブスクリプション数 10、サブスクリプションごとの最大フィルター数 10、合計最大フィルター値 2500 が強制される。
-
-**レート制限**: nostreamの最大の特徴はイベントkindごとに細分化されたイベント送信レートである。kind 0/3/40/41 が6 events/min、kind 1/2/4/42 が12 events/min、kind 5-7/43-49 が30 events/min、置換可能/パラメータ化置換可能イベント(10000-19999, 30000-39999)が24 events/min、一時イベント(20000-29999)が60 events/min、Marmotグループイベント(kind 445)が60 events/min、そして全体で720 events/hourの上限が掛かる。これとは別に、生メッセージ(REQを含む)に対して240 msg/min、接続に対して12/sec・48/minのレート制限がある。レート制限戦略は指数加重移動平均(`ewma`)を採用している。
-
-**時間ベースの制限**: `createdAt.maxPositiveDelta: 900` により未来方向には最大15分先までのイベントを許容する。`maxNegativeDelta: 0` は過去方向の制限を無効化しており、実質的に過去オフセットは制限なしとなる。一時イベント(kind 20000-29999)はDBに保存されず配送のみ行われ、通常イベントの保存期間は `event.retention.maxDays: -1` で無期限である。
-
-**フィルター値とサイズ制限**: `maxFilterValues: 2500` がauthors・ids・kinds・#tagsなど全フィルター値の合計上限となる。したがってauthors数も実質的にこの上限に従う。サイズ面ではネットワークペイロード上限が `network.maxPayloadSize: 524288` (512 KB)、イベントコンテンツ上限が `limits.event.content[].maxLength: 102400` (100 KB) で、コンテンツ上限はkind範囲(0-10/40-49, 11-39/50-max)ごとに設定できる。
-
-**サポートNIP**: package.jsonの `supportedNips` に基づき、NIP-01, 02, 03, 04, 09, 11, 12, 14, 15, 16, 17, 20, 22, 25, 28, 33, 40, 44, 45, 65 をサポートする。決済プロセッサ統合(ZEBEDEE, Nodeless, OpenNode, LNBits, LNURL, NWC)やWeb of Trustフィルタリング、NIP-05検証といった運用機能も備える。
-
----
-
-### 3. nostr-rs-relay (Rust)
-
-**設定ファイル:** `config.toml`
-
-**デフォルト設定:**
-- デフォルト設定に明示的な `maxLimit` または類似のパラメータは見つからず
-- 設定はレート制限、接続制限、イベントサイズ制限に焦点
-
-**動作:**
-- フィルターに `limit` が指定された場合: その値で SQL LIMIT 句を適用 (`ORDER BY e.created_at DESC LIMIT {lim}`)
-- `limit` が指定されていない場合: LIMIT 句を付けず `ORDER BY e.created_at ASC` でクエリする
-- **limit未指定時は全てのマッチするイベントを返す** (潜在的に無制限)
-
-**ソースコードの証拠:**
-```rust
-// src/repo/sqlite.rs:1151-1152
-if let Some(lim) = f.limit {
-    let _ = write!(query, " ORDER BY e.created_at DESC LIMIT {lim}");
-}
-```
-
-**サイズ制限 (デフォルト値):**
-- イベントサイズ: 131,072バイト (128 KB)
-- WebSocketメッセージ: 131,072バイト (128 KB)
-- WebSocketフレーム: 131,072バイト (128 KB)
-
-**時間制限:**
-- 未来に1,800秒 (30分) を超えるイベントを拒否
-- 過去方向の制限や自動削除・保持期間のポリシーは未実装
-
-**レート制限 (設定可能):**
-- 秒あたりメッセージ数: 設定可能 (デフォルト: 無制限)
-- 分あたりサブスクリプション数: 設定可能 (デフォルト: 無制限)
-- サブスクリプション数・REQあたりフィルター数の上限は存在しない
-
-**サポートNIP:** 1, 2, 9, 11, 12, 15, 16, 20, 22, 33, 40 (NIP-42 は `nip42_auth` 有効時のみ追加)
-
-**注目すべき設定オプション:**
-```toml
-[options]
-reject_future_seconds = 1800
-
-[limits]
-# messages_per_sec = 5
-# subscriptions_per_min = 0
-# max_event_bytes = 131072
-# max_ws_message_bytes = 131072
-# max_ws_frame_bytes = 131072
-```
-
----
-
-### 4. khatru (Goフレームワーク)
-
-**設定:** コードベース、設定ファイルなし
-
-**デフォルト設定:**
-- フレームワークに組み込みの最大limit強制なし
-- 開発者は独自のlimitポリシーを実装する必要がある
-
-**動作:**
-- フレームワークは `LimitZero` フラグを処理して `limit: 0` のクエリをスキップ
-- 実際のlimit強制はkhatruを使用するリレー実装に依存
-- レート制限ヘルパーを提供するが、結果制限キャップはなし
-
-**フレームワーク機能:**
-- カスタムイベント/フィルター受け入れポリシー
-- カスタムAUTHハンドラー
-- プラガブルストレージバックエンド
-- `policies` パッケージの組み込みポリシーヘルパー
-
-**デフォルトサイズ制限:**
-- 最大メッセージサイズ: 512,000バイト (500 KB)
-
-**デフォルトレート制限 (`ApplySaneDefaults`経由):**
-- イベントレート: 3分あたり2イベント (max 10 tokens)
-- フィルターレート: 分あたり20フィルター (max 100 tokens)
-- 接続レート: 5分あたり1接続 (max 100 tokens)
-
-**時間制限:**
-- フレームワークはデフォルトでは `created_at` を検証しない (未来/過去オフセットの強制なし)
-- `policies` パッケージは `PreventTimestampsInTheFuture` / `PreventTimestampsInThePast` ヘルパーを提供するが、`ApplySaneDefaults` には含まれず、利用は実装側の任意
-
-**ソースからの例:**
-```go
-// responding.go:21-24
-if filter.LimitZero {
-    return nil, fmt.Errorf("invalid limit 0")
-}
-
-// relay.go:45
-MaxMessageSize: 512000,
-```
-
----
-
-### haven
-
-havenはGo製のリレーで、khatruフレームワークをベースとしている。最大の特徴は、1つのバイナリで4種類のリレー(Private・Chat・Inbox・Outbox)を同時に提供する点であり、それぞれが独立したレート制限設定を持つ。設定は`.env.example`を通じた環境変数で行われ、`limits.go`の`initRelayLimits()`が各リレーの制限値を初期化する。
-
-**limitパラメータ**: havenはlimitパラメータのデフォルト上限を独自に設定していない。各リレーの`QueryEvents`は`eventstore`ライブラリ(v0.17.5)の実装をそのまま登録しており([init.go#L164](https://github.com/bitvora/haven/blob/8d26f9e/init.go#L164))、khatruの挙動を継承する。クライアントが`limit`を省略した場合、データベースからマッチする全イベントを返す可能性があり、結果サイズのハード上限が存在しない。これは大規模データセットでは潜在的に高負荷となりうる。
-
-**レート制限**: havenの制限はリレータイプ単位で細かく設定されている。イベント送信はPrivate/Chatが50 events/min(max 100 tokens)、Inboxが10 events/min(max 20 tokens)、Outboxが10 events/60min(max 100 tokens)。接続レートは全タイプで3接続/intervalだが、intervalがPrivateは5分、Chatは3分、Inbox/Outboxは1分と異なり、トークン上限(maxTokens)は全タイプ9に統一されている。これらはトークンバケット方式で、`time.Minute * interval`ごとにトークンを補充する。重要なのは、これらのレート制限がリクエスト頻度にのみ適用され、1リクエストが返す結果サイズには適用されない点である。
-
-**時間ベースの制限**: haven自体は`created_at`の未来/過去オフセット検証を実装しておらず、khatruの挙動を継承するためデフォルトでは時刻検証は行われない。別軸として、インポートやWoT構築のためのフェッチタイムアウトが存在し、オーナーノートインポートは60秒、タグ付きノートインポートは120秒、WoTフェッチは30秒がデフォルトとなっている。
-
-**フィルター値・サイズ制限**: フィルター値数やREQあたりフィルター数の独自上限はなく、khatruの`MaxMessageSize`(512,000バイト=500 KB)が実質的な上限として機能する。authorsに換算すると概算で約7,400件となる。リレータイプによっては`AllowEmptyFilters`/`AllowComplexFilters`がfalseに設定され、Chat/Inbox/Outboxでは空フィルターや複雑フィルターが拒否される。
-
-**特別な機能**: 4リレー統合に加え、Blossomメディアサーバー、Web of Trustフィルタリング、クラウドバックアップ(S3互換)、BadgerDBまたはLMDBストレージをサポートする。LMDBのデフォルトマップサイズは約273GBと大きい。
-
-総じてhavenは個人/小規模グループ向けの「全部入り」リレーであり、レート制限はリクエスト頻度に対しては堅牢だが、結果サイズの上限が無いためlimit未指定のクエリには注意が必要である。
-
----
-
-### 6. wot-relay (Go, Khatruベース)
-
-**設定ファイル:** `.env.example`
-
-**デフォルト設定:**
-- khatru フレームワーク (新モノレポ `fiatjaf.com/nostr/khatru`) + eventstore ライブラリを使用
-- データベースバックエンド: LMDB (`fiatjaf.com/nostr/eventstore/lmdb`)
-- `relay.UseEventstore(db, 500)` により最大クエリ limit を 500 に設定
-
-**動作:**
-- khatru フレームワークから動作を継承
-- QueryEvents は eventstore (LMDB) バックエンドが処理
-- `limit` 未指定時: khatru の maxQueryLimit (=500) が結果サイズの上限として強制される
-- ネゲントロピー (NIP-77) セッションのみ maxQueryLimit×20 = 10,000 に拡大されるが、wot-relay は Negentropy を有効化していないため通常 500
-
-**ソースコードの証拠:**
-```go
-// main.go:160 — LMDB バックエンド
-db = &lmdb.LMDBBackend{Path: config.DBPath}
-// main.go:164 — 最大クエリ limit を 500 に設定
-relay.UseEventstore(db, 500)
-```
-
-**レート制限・フィルターポリシー:**
-- OnEvent: base64 メディア拒否 → EventIPRateLimiter(5/min, max30) → WoT 外拒否 → 暗号化DM (kind 4) 拒否
-- OnRequest: NoEmptyFilters → NoComplexFilters (タグ2個超かつ要素4個超を拒否) → FilterIPRateLimiter(5/min, max30)
-- RejectConnection: ConnectionRateLimiter(10/2min, max30)
-- khatru デフォルトより厳格。最大サブスクリプション数は未設定 (制限なし)
-
-**特別な機能:**
-- Web of Trust リレー (フォローしているユーザーのノートのみ保存)
-- 設定可能な WoT 深度と最小フォロワー数 (MINIMUM_FOLLOWERS、MAX_TRUST_NETWORK=40000、MAX_ONE_HOP_NETWORK=50000)
-- オプションの他リレーからのアーカイブ同期 (ARCHIVAL_SYNC)、リアクションのアーカイブ可否 (ARCHIVE_REACTIONS)
-- オプションの経過時間ベースのノート削除 (ARCHIVE_KINDS 該当 kind)
-
-**サイズ制限:**
-- khatru の最大メッセージサイズを継承: 512,000 バイト (500 KB)
-
-**時間制限:**
-- created_at の未来・過去検証は登録されておらず強制なし (khatru継承)
-- 最大イベント経過時間: `.env.example` 例では 365 日だが、環境変数未設定時のコード上のデフォルトは 0 (削除無効)。MAX_AGE_DAYS で設定。
-
-**サポート NIP:**
-- khatru が DeleteEvent 設定で NIP-9、Count 設定で NIP-45 を NIP-11 応答に自動追加。基盤プロトコルとして NIP-1 / NIP-11 をサポート。Negentropy 無効のため NIP-77 は非対応。
-
----
-
-
 ## 参考文献
 
 - strfry: https://github.com/hoytech/strfry
@@ -372,7 +163,7 @@ relay.UseEventstore(db, 500)
 - haven: https://github.com/bitvora/haven
 - wot-relay: https://github.com/bitvora/wot-relay
 - eventstore: https://github.com/fiatjaf/eventstore
-- nostr.watch (リレー統計): https://nostr.watch/relays/software
+- nostr.watch — リレー統計と実装別のサポートNIP一覧: https://nostr.watch/relays/software
 
 ---
 
