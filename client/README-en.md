@@ -100,6 +100,44 @@ We researched how each client collects and crawls reactions for events.
 | [algia](evidences/reaction-for-events/algia.md) | No reaction fetch (send only); like/unlike publishes/deletes kind:7 |
 | [kakoi](evidences/reaction-for-events/kakoi.md) | No dedicated reaction collection; timeline subscription (kinds [1,6,7,16]) receives kind:7/6/16 together |
 
+# [Image Upload](evidences/image-upload/)
+Which media server (upload destination provider) each client uploads to when attaching images/media to a post. Clients without an image upload feature (Nosame, kakoi) are omitted.
+
+*Last updated: 2026-07-03*
+
+- ✅ (protocol columns) = supports uploading via that method. ✅ (provider columns) = bundles that provider as a built-in option.
+- "Other" = methods besides NIP-96/Blossom. nullnull and noStrudel use nostr.build's own API (`/api/v2/upload/files`); Yakihonne has an own S3 backend (`/api/v1/file-upload`, for the special value); Amethyst supports NIP-95 (blob embedded in the event); flowgazer delegates to the external app ehagaki.
+- "Provider" is aggregated per operator (`nostr.build` includes Blossom `blossom.nostr.build`; `nostrcheck.me` includes `cdn.nostrcheck.me`; `yabu.me` includes `share.yabu.me`; `sovbit` = `files.sovbit.host`/`cdn.sovbit.host`; `primal` = blossom.primal.net; `satellite` = cdn.satellite.earth; `nostpic` = nostpic.com; `nostrmedia` = nostrmedia.com; `yakihonne` = blossom.yakihonne.com).
+- Most clients also allow adding arbitrary NIP-96/Blossom server URLs and syncing server lists via kind:10063 (Blossom) / kind:10096 (NIP-96). See each evidence file for details.
+
+<table>
+<thead>
+<tr><th rowspan="2">Client</th><th colspan="3">Protocol</th><th colspan="12">Provider</th></tr>
+<tr><th>NIP-96</th><th>Blossom</th><th>Other</th><th>nostr.build</th><th>nostrcheck.me</th><th>primal</th><th>yabu.me</th><th>sovbit</th><th>blossom.band</th><th>nostr.download</th><th>satellite</th><th>nostpic</th><th>void.cat</th><th>nostrmedia</th><th>yakihonne</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="evidences/image-upload/nostter.md">nostter</a></td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/rabbit.md">Rabbit</a></td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/lumilumi.md">Lumilumi</a></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/nos-haiku.md">Nos Haiku</a></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/nullnull.md">nullnull</a></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/flowgazer.md">flowgazer</a> *3</td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/yakihonne.md">Yakihonne</a></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+<tr><td><a href="evidences/image-upload/iris.md">iris</a> *1</td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/primal.md">Primal</a></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/coracle.md">Coracle</a></td><td></td><td align="center">✅</td><td></td><td align="center">✅</td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td align="center">✅</td><td></td><td align="center">✅</td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/nostrudel.md">noStrudel</a></td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/amethyst.md">Amethyst</a> *2</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td></tr>
+<tr><td><a href="evidences/image-upload/damus.md">Damus</a></td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/algia.md">algia</a> *4</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+
+*1 iris: iris subscribers get `upload.iris.to` (Blossom) prepended to the defaults.
+*2 Amethyst: in addition to the providers above, also bundles `24242.io` and `blossom.azzamo.media` (10 Blossom servers total).
+*3 flowgazer: image posting is delegated to the external app ehagaki (`lokuyow.github.io/ehagaki`), so it bundles no provider of its own.
+*4 algia: CLI. No bundled default; requires the `file-servers` config or `--server`.
+
 # Frameworks
 We researched the frameworks and libraries used in each client's implementation.
 
