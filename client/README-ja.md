@@ -69,25 +69,25 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 *最終更新: 2026-06-25*
 
-| クライアント | 検索リレー |
-|-------------|-----------|
-| [nostter](evidences/search-relay/nostter.md) | nostr.wine, search.nos.today (環境変数 VITE_SEARCH_RELAYS で上書き可) |
-| [Rabbit](evidences/search-relay/rabbit.md) | relay.nostr.band, search.nos.today |
-| [Lumilumi](evidences/search-relay/lumilumi.md) | search.nos.today, nostr.wine, cagliostr.compile-error.net (kind:10007 で上書き可) |
-| [Nos Haiku](evidences/search-relay/nos-haiku.md) | search.nos.today |
-| [ぬるぬる](evidences/search-relay/nullnull.md) | search.nos.today |
-| [野雨](evidences/search-relay/nosame.md) | なし（全文検索機能が未実装、NIP-50 非対応） |
-| [flowgazer](evidences/search-relay/flowgazer.md) | なし（NIP-50 全文検索は未実装） |
-| [Yakihonne](evidences/search-relay/yakihonne.md) | search.nos.today, relay.ditto.pub, nostr.polyserv.xyz (+ kind:10007) |
-| [iris](evidences/search-relay/iris.md) | 専用リレーなし (接続中リレーへ NIP-50 + #t 送信、プロフィールはローカル Fuse.js) |
-| [Primal](evidences/search-relay/primal.md) | キャッシュサーバー経由 (search / user_search / advanced_search) |
-| [Coracle](evidences/search-relay/coracle.md) | nostr.wine, search.nos.today |
-| [noStrudel](evidences/search-relay/nostrudel.md) | relay.nostr.band, search.nos.today, relay.noswhere.com, filter.nostr.wine (+ kind:10007 系) |
-| [Amethyst](evidences/search-relay/amethyst.md) | nostr.wine, relay.noswhere.com, search.nos.today, antiprimal.net, relay.ditto.pub (+ kind:10007) |
-| [Damus](evidences/search-relay/damus.md) | なし (ローカル nostrdb で全文検索) |
-| [algia](evidences/search-relay/algia.md) | relay.nostr.band (config.json の search:true 設定に依存) |
-| [kakoi](evidences/search-relay/kakoi.md) | なし (NIP-50 全文検索は未実装) |
-| [Nostrism](evidences/search-relay/nostrism.md) | relay.nostr.band, relay.noswhere.sh, search.nos.today (NIP-50 専用リレーへ問い合わせ、接続中リレーが未対応でも動く) |
+| クライアント | search.nos.today | relay.nostr.band | nostr.wine | relay.noswhere.com | relay.ditto.pub | filter.nostr.wine | relay.noswhere.sh | cagliostr.compile-error.net | nostr.polyserv.xyz | antiprimal.net | 備考 |
+|-------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|------|
+| [nostter](evidences/search-relay/nostter.md) | ✅ | | ✅ | | | | | | | | 環境変数 `VITE_SEARCH_RELAYS`（カンマ区切り）で上書き可。 |
+| [Rabbit](evidences/search-relay/rabbit.md) | ✅ | ✅ | | | | | | | | | `relaysForSearching` の固定2件。 |
+| [Lumilumi](evidences/search-relay/lumilumi.md) | ✅ | | ✅ | | | | | ✅ | | | kind:10007 があればそちらを優先。`relay.nostr.band` はコメントアウト中。 |
+| [Nos Haiku](evidences/search-relay/nos-haiku.md) | ✅ | | | | | | | | | | チャンネル (kind:40/41) の検索のみ。 |
+| [ぬるぬる](evidences/search-relay/nullnull.md) | ✅ | | | | | | | | | | 環境変数 `NEXT_PUBLIC_SEARCH_RELAY` で上書き可。 |
+| [野雨](evidences/search-relay/nosame.md) | | | | | | | | | | | なし（全文検索機能が未実装、NIP-50 非対応）。 |
+| [flowgazer](evidences/search-relay/flowgazer.md) | | | | | | | | | | | なし（NIP-50 全文検索は未実装）。 |
+| [Yakihonne](evidences/search-relay/yakihonne.md) | ✅ | | | | ✅ | | | | ✅ | | ユーザの kind:10007 リレーを追加。NIP-50 search + #t タグ検索。 |
+| [iris](evidences/search-relay/iris.md) | | | | | | | | | | | 専用リレーなし（接続中リレーへ NIP-50 + #t を送信）。プロフィール検索はローカル Fuse.js。 |
+| [Primal](evidences/search-relay/primal.md) | | | | | | | | | | | 専用リレーなし。キャッシュサーバー経由 (search / user_search / advanced_search)。 |
+| [Coracle](evidences/search-relay/coracle.md) | ✅ | | ✅ | | | | | | | | `env.SEARCH_RELAYS` を Router.Search() 経由で使用。 |
+| [noStrudel](evidences/search-relay/nostrudel.md) | ✅ | ✅ | | ✅ | | ✅ | | | | | ユーザーの検索リレーリスト (kind:10007 系) があればそちらを優先。 |
+| [Amethyst](evidences/search-relay/amethyst.md) | ✅ | | ✅ | ✅ | ✅ | | | | | ✅ | kind:10007 (SearchRelayListEvent) 未設定時のフォールバック。 |
+| [Damus](evidences/search-relay/damus.md) | | | | | | | | | | | なし（ローカル nostrdb の全文検索 ndb_text_search）。 |
+| [algia](evidences/search-relay/algia.md) | | ✅ | | | | | | | | | 設定ファイルで Search:true かつ Read:true のリレー。既定は relay.nostr.band。 |
+| [kakoi](evidences/search-relay/kakoi.md) | | | | | | | | | | | なし（NIP-50 全文検索は未実装）。 |
+| [Nostrism](evidences/search-relay/nostrism.md) | ✅ | ✅ | | | | | ✅ | | | | 接続中リレーではなく専用リレー群へ問い合わせ（未対応リレーでも動く）。 |
 
 # [リアクション](evidences/reaction-for-events/)
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
