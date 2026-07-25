@@ -163,7 +163,7 @@ pubkey 1件 = 64文字 (hex) + 約3文字 (引用符・カンマ) ≈ 67 bytes �
 - haven: https://github.com/bitvora/haven
 - wot-relay: https://github.com/bitvora/wot-relay
 - eventstore: https://github.com/fiatjaf/eventstore
-- nostr.watch — リレー統計と実装別のサポートNIP一覧: https://nostr.watch/relays/software
+- nostr.watch (リレー統計): https://nostr.watch/relays/software
 
 ---
 

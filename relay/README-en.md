@@ -2,6 +2,15 @@
 
 # Nostr Relay Specifications
 
+## Contents
+- [Relay Rankings](#relay-rankings-last-checked-20260626)
+- [Limit Parameter Behavior](#limit-parameter-behavior)
+- [Rate Limiting](#rate-limiting)
+- [Filter Values and Message Size Limits](#filter-values-and-message-size-limits)
+- [Time-based Restrictions](#time-based-restrictions)
+- [References](#references)
+- [Version Information](#version-information)
+
 ## Relay Rankings (Last Checked: 2026/06/26)
 
 Source: [nostr.watch](https://nostr.watch/relays/software)
@@ -153,7 +162,7 @@ This table shows how relays manage stored events over time.
 - haven: https://github.com/bitvora/haven
 - wot-relay: https://github.com/bitvora/wot-relay
 - eventstore: https://github.com/fiatjaf/eventstore
-- nostr.watch — relay statistics and supported NIPs by implementation: https://nostr.watch/relays/software
+- nostr.watch (relay statistics): https://nostr.watch/relays/software
 
 ---
 
