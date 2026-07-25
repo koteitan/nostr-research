@@ -69,25 +69,22 @@ We researched which relays each client uses for search.
 
 *Last updated: 2026-06-25*
 
-| Client | search.nos.today | relay.nostr.band | nostr.wine | relay.noswhere.com | relay.ditto.pub | Other | Notes |
-|--------|:---:|:---:|:---:|:---:|:---:|-------|-------|
-| [nostter](evidences/search-relay/nostter.md) | ✅ | | ✅ | | | | Overridable via the `VITE_SEARCH_RELAYS` env var (comma-separated). |
-| [Rabbit](evidences/search-relay/rabbit.md) | ✅ | ✅ | | | | | Fixed pair in `relaysForSearching`. |
-| [Lumilumi](evidences/search-relay/lumilumi.md) | ✅ | | ✅ | | | cagliostr.compile-error.net | kind:10007 takes priority when present. `relay.nostr.band` is currently commented out. |
-| [Nos Haiku](evidences/search-relay/nos-haiku.md) | ✅ | | | | | | Channel (kind:40/41) search only. |
-| [nullnull](evidences/search-relay/nullnull.md) | ✅ | | | | | | Overridable via the `NEXT_PUBLIC_SEARCH_RELAY` env var. |
-| [Nosame](evidences/search-relay/nosame.md) | | | | | | | None (full-text search not implemented, NIP-50 unsupported). |
-| [flowgazer](evidences/search-relay/flowgazer.md) | | | | | | | None (NIP-50 full-text search not implemented). |
-| [Yakihonne](evidences/search-relay/yakihonne.md) | ✅ | | | | ✅ | nostr.polyserv.xyz | Adds the user's kind:10007 relays. NIP-50 search + #t tag search. |
-| [iris](evidences/search-relay/iris.md) | | | | | | | No dedicated relay (sends NIP-50 + #t to connected relays). Profile search is local via Fuse.js. |
-| [Primal](evidences/search-relay/primal.md) | | | | | | | No dedicated relay. Via cache server (search / user_search / advanced_search). |
-| [Coracle](evidences/search-relay/coracle.md) | ✅ | | ✅ | | | | Uses `env.SEARCH_RELAYS` via Router.Search(). |
-| [noStrudel](evidences/search-relay/nostrudel.md) | ✅ | ✅ | | ✅ | | filter.nostr.wine | The user's search relay list (kind:10007 family) takes priority when published. |
-| [Amethyst](evidences/search-relay/amethyst.md) | ✅ | | ✅ | ✅ | ✅ | antiprimal.net | Fallback when kind:10007 (SearchRelayListEvent) is unset. |
-| [Damus](evidences/search-relay/damus.md) | | | | | | | None (local full-text search via nostrdb ndb_text_search). |
-| [algia](evidences/search-relay/algia.md) | | ✅ | | | | | Relays with Search:true and Read:true in the config file; relay.nostr.band by default. |
-| [kakoi](evidences/search-relay/kakoi.md) | | | | | | | None (NIP-50 full-text search not implemented). |
-| [Nostrism](evidences/search-relay/nostrism.md) | ✅ | ✅ | | | | relay.noswhere.sh | Queries the dedicated relay set instead of connected relays (works even if they lack NIP-50). |
+| Client | search.nos.today | relay.nostr.band | nostr.wine | Other | Notes |
+|--------|:---:|:---:|:---:|-------|-------|
+| [Amethyst](evidences/search-relay/amethyst.md) | ✅ | | ✅ | relay.noswhere.com, relay.ditto.pub, antiprimal.net | Fallback when kind:10007 (SearchRelayListEvent) is unset. |
+| [noStrudel](evidences/search-relay/nostrudel.md) | ✅ | ✅ | | relay.noswhere.com, filter.nostr.wine | The user's search relay list (kind:10007 family) takes priority when published. |
+| [Lumilumi](evidences/search-relay/lumilumi.md) | ✅ | | ✅ | cagliostr.compile-error.net | kind:10007 takes priority when present. `relay.nostr.band` is currently commented out. |
+| [Yakihonne](evidences/search-relay/yakihonne.md) | ✅ | | | relay.ditto.pub, nostr.polyserv.xyz | Adds the user's kind:10007 relays. NIP-50 search + #t tag search. |
+| [Nostrism](evidences/search-relay/nostrism.md) | ✅ | ✅ | | relay.noswhere.sh | Queries the dedicated relay set instead of connected relays (works even if they lack NIP-50). |
+| [nostter](evidences/search-relay/nostter.md) | ✅ | | ✅ | | Overridable via the `VITE_SEARCH_RELAYS` env var (comma-separated). |
+| [Rabbit](evidences/search-relay/rabbit.md) | ✅ | ✅ | | | Fixed pair in `relaysForSearching`. |
+| [Coracle](evidences/search-relay/coracle.md) | ✅ | | ✅ | | Uses `env.SEARCH_RELAYS` via Router.Search(). |
+| [Nos Haiku](evidences/search-relay/nos-haiku.md) | ✅ | | | | Channel (kind:40/41) search only. |
+| [nullnull](evidences/search-relay/nullnull.md) | ✅ | | | | Overridable via the `NEXT_PUBLIC_SEARCH_RELAY` env var. |
+| [algia](evidences/search-relay/algia.md) | | ✅ | | | Relays with Search:true and Read:true in the config file; relay.nostr.band by default. |
+| [iris](evidences/search-relay/iris.md) | | | | | No dedicated relay (sends NIP-50 + #t to connected relays). Profile search is local via Fuse.js. |
+| [Primal](evidences/search-relay/primal.md) | | | | | No dedicated relay. Via cache server (search / user_search / advanced_search). |
+| [Damus](evidences/search-relay/damus.md) | | | | | None (local full-text search via nostrdb ndb_text_search). |
 
 # [Reactions](evidences/reaction-for-events/)
 We researched how each client collects and crawls reactions for events.
@@ -191,7 +188,7 @@ We researched the frameworks and libraries used in each client's implementation.
 - mobile:
   - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst)
   - [Damus](https://damus.io/)
-  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client) (Kotlin Multiplatform / Android, iOS, iPad + Desktop; Deck-style)
+  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client)
 - cli:
   - [algia](https://github.com/mattn/algia)
 - desktop:

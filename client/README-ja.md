@@ -69,25 +69,22 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 
 *最終更新: 2026-06-25*
 
-| クライアント | search.nos.today | relay.nostr.band | nostr.wine | relay.noswhere.com | relay.ditto.pub | その他 | 備考 |
-|-------------|:---:|:---:|:---:|:---:|:---:|------|------|
-| [nostter](evidences/search-relay/nostter.md) | ✅ | | ✅ | | | | 環境変数 `VITE_SEARCH_RELAYS`（カンマ区切り）で上書き可。 |
-| [Rabbit](evidences/search-relay/rabbit.md) | ✅ | ✅ | | | | | `relaysForSearching` の固定2件。 |
-| [Lumilumi](evidences/search-relay/lumilumi.md) | ✅ | | ✅ | | | cagliostr.compile-error.net | kind:10007 があればそちらを優先。`relay.nostr.band` はコメントアウト中。 |
-| [Nos Haiku](evidences/search-relay/nos-haiku.md) | ✅ | | | | | | チャンネル (kind:40/41) の検索のみ。 |
-| [ぬるぬる](evidences/search-relay/nullnull.md) | ✅ | | | | | | 環境変数 `NEXT_PUBLIC_SEARCH_RELAY` で上書き可。 |
-| [野雨](evidences/search-relay/nosame.md) | | | | | | | なし（全文検索機能が未実装、NIP-50 非対応）。 |
-| [flowgazer](evidences/search-relay/flowgazer.md) | | | | | | | なし（NIP-50 全文検索は未実装）。 |
-| [Yakihonne](evidences/search-relay/yakihonne.md) | ✅ | | | | ✅ | nostr.polyserv.xyz | ユーザの kind:10007 リレーを追加。NIP-50 search + #t タグ検索。 |
-| [iris](evidences/search-relay/iris.md) | | | | | | | 専用リレーなし（接続中リレーへ NIP-50 + #t を送信）。プロフィール検索はローカル Fuse.js。 |
-| [Primal](evidences/search-relay/primal.md) | | | | | | | 専用リレーなし。キャッシュサーバー経由 (search / user_search / advanced_search)。 |
-| [Coracle](evidences/search-relay/coracle.md) | ✅ | | ✅ | | | | `env.SEARCH_RELAYS` を Router.Search() 経由で使用。 |
-| [noStrudel](evidences/search-relay/nostrudel.md) | ✅ | ✅ | | ✅ | | filter.nostr.wine | ユーザーの検索リレーリスト (kind:10007 系) があればそちらを優先。 |
-| [Amethyst](evidences/search-relay/amethyst.md) | ✅ | | ✅ | ✅ | ✅ | antiprimal.net | kind:10007 (SearchRelayListEvent) 未設定時のフォールバック。 |
-| [Damus](evidences/search-relay/damus.md) | | | | | | | なし（ローカル nostrdb の全文検索 ndb_text_search）。 |
-| [algia](evidences/search-relay/algia.md) | | ✅ | | | | | 設定ファイルで Search:true かつ Read:true のリレー。既定は relay.nostr.band。 |
-| [kakoi](evidences/search-relay/kakoi.md) | | | | | | | なし（NIP-50 全文検索は未実装）。 |
-| [Nostrism](evidences/search-relay/nostrism.md) | ✅ | ✅ | | | | relay.noswhere.sh | 接続中リレーではなく専用リレー群へ問い合わせ（未対応リレーでも動く）。 |
+| クライアント | search.nos.today | relay.nostr.band | nostr.wine | その他 | 備考 |
+|-------------|:---:|:---:|:---:|------|------|
+| [Amethyst](evidences/search-relay/amethyst.md) | ✅ | | ✅ | relay.noswhere.com, relay.ditto.pub, antiprimal.net | kind:10007 (SearchRelayListEvent) 未設定時のフォールバック。 |
+| [noStrudel](evidences/search-relay/nostrudel.md) | ✅ | ✅ | | relay.noswhere.com, filter.nostr.wine | ユーザーの検索リレーリスト (kind:10007 系) があればそちらを優先。 |
+| [Lumilumi](evidences/search-relay/lumilumi.md) | ✅ | | ✅ | cagliostr.compile-error.net | kind:10007 があればそちらを優先。`relay.nostr.band` はコメントアウト中。 |
+| [Yakihonne](evidences/search-relay/yakihonne.md) | ✅ | | | relay.ditto.pub, nostr.polyserv.xyz | ユーザの kind:10007 リレーを追加。NIP-50 search + #t タグ検索。 |
+| [Nostrism](evidences/search-relay/nostrism.md) | ✅ | ✅ | | relay.noswhere.sh | 接続中リレーではなく専用リレー群へ問い合わせ（未対応リレーでも動く）。 |
+| [nostter](evidences/search-relay/nostter.md) | ✅ | | ✅ | | 環境変数 `VITE_SEARCH_RELAYS`（カンマ区切り）で上書き可。 |
+| [Rabbit](evidences/search-relay/rabbit.md) | ✅ | ✅ | | | `relaysForSearching` の固定2件。 |
+| [Coracle](evidences/search-relay/coracle.md) | ✅ | | ✅ | | `env.SEARCH_RELAYS` を Router.Search() 経由で使用。 |
+| [Nos Haiku](evidences/search-relay/nos-haiku.md) | ✅ | | | | チャンネル (kind:40/41) の検索のみ。 |
+| [ぬるぬる](evidences/search-relay/nullnull.md) | ✅ | | | | 環境変数 `NEXT_PUBLIC_SEARCH_RELAY` で上書き可。 |
+| [algia](evidences/search-relay/algia.md) | | ✅ | | | 設定ファイルで Search:true かつ Read:true のリレー。既定は relay.nostr.band。 |
+| [iris](evidences/search-relay/iris.md) | | | | | 専用リレーなし（接続中リレーへ NIP-50 + #t を送信）。プロフィール検索はローカル Fuse.js。 |
+| [Primal](evidences/search-relay/primal.md) | | | | | 専用リレーなし。キャッシュサーバー経由 (search / user_search / advanced_search)。 |
+| [Damus](evidences/search-relay/damus.md) | | | | | なし（ローカル nostrdb の全文検索 ndb_text_search）。 |
 
 # [リアクション](evidences/reaction-for-events/)
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
@@ -191,7 +188,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 - mobile:
   - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst)
   - [Damus](https://damus.io/)
-  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client) (Kotlin Multiplatform / Android・iOS・iPad + Desktop、Deck 型)
+  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client)
 - cli:
   - [algia](https://github.com/mattn/algia)
 - desktop:
