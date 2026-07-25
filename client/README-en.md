@@ -4,6 +4,16 @@
 A repository for researching implementation differences between Nostr clients.
 Contact npub1f3w4x7dqvceeez8kuyq78md3lwhwfm0ra634llr0r3nykwjrs0hqvldhgk or [github issue](https://github.com/koteitan/nostr-research/issues) to request research on specific implementation differences. Client suggestions and PRs are also welcome.
 
+## Contents
+- [Bootstrap Relays](#bootstrap-relays)
+- [Relays](#relays)
+- [Search Relays](#search-relays)
+- [Reactions](#reactions)
+- [Image Upload](#image-upload)
+- [Frameworks](#frameworks)
+- [Researched Clients](#researched-clients)
+- [References](#references)
+
 # [Bootstrap Relays](evidences/bootstrap-relay/)
 There are various methods for determining which relays Nostr subscribes to, such as using kind:10002 or the outbox model. Much of this information is contained in relay metadata. To obtain this metadata, clients must first connect to some relay. We researched how each client determines its bootstrap relays.
 
@@ -27,6 +37,7 @@ There are various methods for determining which relays Nostr subscribes to, such
 | [Damus](evidences/bootstrap-relay/damus.md) | relay.damus.io, nostr.land, nostr.wine, nos.lol | Regional relays added based on the user's locale (Japan: relay-jp.nostr.wirednet.jp/yabu.me/r.kojira.io, Thailand, Germany). Custom relays can be saved in UserDefaults. |
 | [algia](evidences/bootstrap-relay/algia.md) | relay.nostr.band | When no relays are defined in the config file, relay.nostr.band is added once with Read/Write/Search flags all enabled. No locale-specific relays. |
 | [kakoi](evidences/bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | Hardcoded list used when relays.json does not exist. No locale branching or env-var additions. |
+| [Nostrism](evidences/bootstrap-relay/nostrism.md) | Japanese: relay-jp.shino3.net (run by the app), yabu.me, relay.damus.io, nos.lol / Other locales: relay.damus.io, nos.lol | Seeded into the relay table by device language on first launch only (never overwrites an existing user's relays). Separately uses INDEXER_RELAYS (purplepag.es, relay.nostr.band, relay.damus.io, nos.lol, relay.primal.net) to fetch kind:0/10002. |
 
 # [Relays](evidences/relay/)
 We researched how each client obtains relays for building the home timeline.
@@ -51,6 +62,7 @@ We researched how each client obtains relays for building the home timeline.
 | [Damus](evidences/relay/damus.md) | kind:10002 (NIP-65) | Fallback order: in-memory cache -> kind:10002 -> kind:3 -> UserDefaults -> Bootstrap relays. kind:10002 subscribed in real time; the in-memory cache is lastSetRelayList. |
 | [algia](evidences/relay/algia.md) | kind:10002 (NIP-65) | Initial connection via config file (~/.config/algia/config.json); overwritten by kind:10002 read relays (only when rm is non-empty). Existing Search flags inherited. |
 | [kakoi](evidences/relay/kakoi.md) | From settings | relays.json (GetEnabledRelays extracts enabled=true entries), falls back to default relays. kind:10002 / outbox not used; manually edited fixed list. |
+| [Nostrism](evidences/relay/nostrism.md) | Outbox model (kind:10002 NIP-65) | Uses the user's own kind:10002 as the relay config (edited/published via Settings; seeded from a language-based default on first launch). The following column subscribes kind:1/6/16 from the user's read relays. Author columns (<= 3 authors) additionally subscribe the author's kind:10002 write relays (outbox, capped at 16). |
 
 # [Search Relays](evidences/search-relay/)
 We researched which relays each client uses for search.
@@ -75,6 +87,7 @@ We researched which relays each client uses for search.
 | [Damus](evidences/search-relay/damus.md) | None (local full-text search via nostrdb, no search relay) |
 | [algia](evidences/search-relay/algia.md) | relay.nostr.band (relays with Search:true in config) |
 | [kakoi](evidences/search-relay/kakoi.md) | None (NIP-50 full-text search not implemented) |
+| [Nostrism](evidences/search-relay/nostrism.md) | relay.nostr.band, relay.noswhere.sh, search.nos.today (queries dedicated NIP-50 relays; works even if connected relays don't support NIP-50) |
 
 # [Reactions](evidences/reaction-for-events/)
 We researched how each client collects and crawls reactions for events.
@@ -99,16 +112,12 @@ We researched how each client collects and crawls reactions for events.
 | [Damus](evidences/reaction-for-events/damus.md) | Real-time subscription of own notifications via #p filter (kind 7/6/9735/1) |
 | [algia](evidences/reaction-for-events/algia.md) | No reaction fetch (send only); like/unlike publishes/deletes kind:7 |
 | [kakoi](evidences/reaction-for-events/kakoi.md) | No dedicated reaction collection; timeline subscription (kinds [1,6,7,16]) receives kind:7/6/16 together |
+| [Nostrism](evidences/reaction-for-events/nostrism.md) | No aggregation on the normal timeline (subscribes kind:1/6/16 only, not kind:7). Public chat (kind:42) only: batch-subscribes kind:7 for visible messages by #e (up to 300 ids, limit 500) for aggregated display. Notifications subscribe own-directed (#p) kind:7/9735 etc. |
 
 # [Image Upload](evidences/image-upload/)
-Which media server (upload destination provider) each client uploads to when attaching images/media to a post. Clients without an image upload feature (Nosame, kakoi) are omitted.
+Which media server (upload destination provider) each client uploads to when attaching images/media to a post.
 
 *Last updated: 2026-07-03*
-
-- ✅ (protocol columns) = supports uploading via that method. ✅ (provider columns) = bundles that provider as a built-in option.
-- "Other" = methods besides NIP-96/Blossom. nullnull and noStrudel use nostr.build's own API (`/api/v2/upload/files`); Yakihonne has an own S3 backend (`/api/v1/file-upload`, for the special value); Amethyst supports NIP-95 (blob embedded in the event); flowgazer delegates to the external app ehagaki.
-- "Provider" is aggregated per operator (`nostr.build` includes Blossom `blossom.nostr.build`; `nostrcheck.me` includes `cdn.nostrcheck.me`; `yabu.me` includes `share.yabu.me`; `sovbit` = `files.sovbit.host`/`cdn.sovbit.host`; `primal` = blossom.primal.net; `satellite` = cdn.satellite.earth; `nostpic` = nostpic.com; `nostrmedia` = nostrmedia.com; `yakihonne` = blossom.yakihonne.com).
-- Most clients also allow adding arbitrary NIP-96/Blossom server URLs and syncing server lists via kind:10063 (Blossom) / kind:10096 (NIP-96). See each evidence file for details.
 
 <table>
 <thead>
@@ -130,6 +139,7 @@ Which media server (upload destination provider) each client uploads to when att
 <tr><td><a href="evidences/image-upload/amethyst.md">Amethyst</a> *2</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td></tr>
 <tr><td><a href="evidences/image-upload/damus.md">Damus</a></td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td><a href="evidences/image-upload/algia.md">algia</a> *4</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/nostrism.md">Nostrism</a> *5</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td></td><td align="center">✅</td><td></td></tr>
 </tbody>
 </table>
 
@@ -137,6 +147,7 @@ Which media server (upload destination provider) each client uploads to when att
 *2 Amethyst: in addition to the providers above, also bundles `24242.io` and `blossom.azzamo.media` (10 Blossom servers total).
 *3 flowgazer: image posting is delegated to the external app ehagaki (`lokuyow.github.io/ehagaki`), so it bundles no provider of its own.
 *4 algia: CLI. No bundled default; requires the `file-servers` config or `--server`.
+*5 Nostrism: only nostrcheck.me and nostr.build are seeded as active defaults. nostpic.com / nostrmedia.com / files.sovbit.host are one-tap presets in Settings.
 
 # Frameworks
 We researched the frameworks and libraries used in each client's implementation.
@@ -161,6 +172,7 @@ We researched the frameworks and libraries used in each client's implementation.
 | Damus | Swift + C (iOS/macOS) | SwiftUI | Custom implementation (RelayPool / NostrNetworkManager) + nostrdb (C-based local event store / full-text search) | nostr-sdk-swift (rust-nostr), negentropy-swift (relay sync), secp256k1.swift, CryptoSwift, Kingfisher, swift-markdown-ui, GSPlayer, SwiftSoup, swift-collections, sentry-cocoa |
 | algia | Go (go 1.24.1) | CLI (urfave/cli v2). Also has an MCP server mode (mark3labs/mcp-go) | nbd-wtf/go-nostr v0.52.3 (incl. sdk/pool) | fatih/color, mattn/go-colorable/go-isatty, mdp/qrterminal (QR display), mark3labs/mcp-go (MCP) |
 | kakoi | C# (.NET 8 / net8.0-windows7.0) | Windows Forms (WinForms) + WebView2 | NNostr.Client (bundled and modified in repo) | Google_GenerativeAI (Gemini), Microsoft.Web.WebView2, NTextCat (language detection), SkiaSharp, Svg.Skia, CredentialManagement, SSTPLib (Ukagaka SSTP integration) |
+| Nostrism | Kotlin (Kotlin Multiplatform) | Compose Multiplatform 1.11 (Material3 + material-icons-extended; Deck-style UI for Android/iOS/iPad + Desktop) | Custom implementation (`:nostr-core` protocol module + `nostr/` relay pool over Ktor WebSocket; hand-written `crypto/Nip01` & `Nip19`; EC via secp256k1-kmp) | SQLDelight (SSOT DB, cache-first, migrations), Ktor client (okhttp/darwin/cio), Coil3 (images + coil-gif), kotlinx.coroutines/Flow, kotlinx.serialization, kotlincrypto sha2, multiplatform-settings, androidx.media3 (video), androidx.credentials (Nosskey/passkey), Android Keystore + NIP-46/NIP-55 signing |
 
 # Researched Clients
 - web:
@@ -179,6 +191,7 @@ We researched the frameworks and libraries used in each client's implementation.
 - mobile:
   - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst)
   - [Damus](https://damus.io/)
+  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client) (Kotlin Multiplatform / Android, iOS, iPad + Desktop; Deck-style)
 - cli:
   - [algia](https://github.com/mattn/algia)
 - desktop:
@@ -202,6 +215,7 @@ We researched the frameworks and libraries used in each client's implementation.
   - Damus: https://github.com/damus-io/damus
   - algia: https://github.com/mattn/algia
   - kakoi: https://github.com/betonetojp/kakoi
+  - Nostrism: https://github.com/ShinoharaTa/nostr-andloid-native-client
 - NIPs
   - NIP-25 (Reactions): https://github.com/nostr-protocol/nips/blob/master/25.md
   - NIP-65 (Relay List Metadata): https://github.com/nostr-protocol/nips/blob/master/65.md

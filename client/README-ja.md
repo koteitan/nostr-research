@@ -37,6 +37,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [Damus](evidences/bootstrap-relay/damus.md) | relay.damus.io, nostr.land, nostr.wine, nos.lol | グローバル4リレー + 地域別 (日本: relay-jp.nostr.wirednet.jp/yabu.me/r.kojira.io、タイ、ドイツ)。UserDefaults にカスタムリレー保存可能 (save_bootstrap_relays / load_bootstrap_relays)。 |
 | [algia](evidences/bootstrap-relay/algia.md) | relay.nostr.band | ブートストラップは設定ファイル(~/.config/algia/config.json)の relays。空の場合のみ relay.nostr.band を1件だけ Read/Write/Search 全フラグ有効で追加。ロケール別の追加リレーは無し。 |
 | [kakoi](evidences/bootstrap-relay/kakoi.md) | yabu.me, r.kojira.io, relay-jp.nostr.wirednet.jp, nos.lol, relay.damus.io, relay.nostr.band | LoadRelays() 内。relays.json が存在しない場合に返す日本語圏中心の固定リスト。ロケール分岐や環境変数による追加は無し。 |
+| [Nostrism](evidences/bootstrap-relay/nostrism.md) | 日本語: relay-jp.shino3.net (本アプリ運営), yabu.me, relay.damus.io, nos.lol / その他言語: relay.damus.io, nos.lol | 初回起動時のみ端末言語で切替えてリレー表へシード（既存ユーザーの設定は上書きしない）。別途 INDEXER_RELAYS (purplepag.es, relay.nostr.band, relay.damus.io, nos.lol, relay.primal.net) で kind:0/10002 を取得。 |
 
 # [リレー](evidences/relay/)
 各クライアントがホームタイムラインを作るためのリレーをどこから取得しているかを調査しました。
@@ -61,6 +62,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [Damus](evidences/relay/damus.md) | kind:10002 (NIP-65) | フォールバック順: メモリ内キャッシュ (lastSetRelayList) → kind:10002 → kind:3 → UserDefaults → Bootstrap リレー。listenAndHandleRelayUpdates() で kind:10002 をリアルタイム購読し、より新しいリストのみ反映。 |
 | [algia](evidences/relay/algia.md) | kind:10002 (NIP-65) | 設定ファイルの relays で初期接続し、その read リレーから kind:10002 を取得して上書き。rm が非空のときのみ cfg.Relays を上書き。--relay 指定時(tempRelay)は取得しない。 |
 | [kakoi](evidences/relay/kakoi.md) | 設定から取得 | relays.json (GetEnabledRelays が enabled=true のみ抽出, 行215-227) から取得。kind:10002 や outbox モデルの探索は無く、ユーザーが手動編集する固定リスト方式。 |
+| [Nostrism](evidences/relay/nostrism.md) | Outboxモデル (kind:10002 NIP-65) | 自分の kind:10002 をリレー設定として使用（Settings で編集・公開、初回は言語別デフォルトをシード）。フォロー中カラムは自分の read リレーから kind:1/6/16 を購読。著者カラム（著者数≤3）は著者の kind:10002 の write リレーからも追加購読（outbox、上限16）。 |
 
 # [検索リレー](evidences/search-relay/)
 各クライアントが検索に使用するリレーを調査しました。
@@ -85,6 +87,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [Damus](evidences/search-relay/damus.md) | なし (ローカル nostrdb で全文検索) |
 | [algia](evidences/search-relay/algia.md) | relay.nostr.band (config.json の search:true 設定に依存) |
 | [kakoi](evidences/search-relay/kakoi.md) | なし (NIP-50 全文検索は未実装) |
+| [Nostrism](evidences/search-relay/nostrism.md) | relay.nostr.band, relay.noswhere.sh, search.nos.today (NIP-50 専用リレーへ問い合わせ、接続中リレーが未対応でも動く) |
 
 # [リアクション](evidences/reaction-for-events/)
 イベントについているリアクションの収集方法, クローリング方法を調査しました。
@@ -109,16 +112,12 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | [Damus](evidences/reaction-for-events/damus.md) | #p フィルタで自分宛通知をリアルタイム購読 (kind:7/6/9735/1) |
 | [algia](evidences/reaction-for-events/algia.md) | リアクション取得なし（送信専用） |
 | [kakoi](evidences/reaction-for-events/kakoi.md) | 専用収集なし (タイムライン購読 kind:[1,6,7,16] で一括受信のみ) |
+| [Nostrism](evidences/reaction-for-events/nostrism.md) | 通常TLは集計なし（kind:1/6/16のみ購読、kind:7は購読しない）。パブリックチャット(kind:42)のみ表示中メッセージへ #e で kind:7 をバッチ購読(最大300 id, limit 500)して集約表示。通知は自分宛(#p) の kind:7/9735 等 |
 
 # [画像アップロード](evidences/image-upload/)
-各クライアントが投稿に画像/メディアを添付する際、どのメディアサーバー（アップロード先プロバイダ）へアップロードするかを調査しました。画像アップロード機能を持たないクライアント（野雨・kakoi）は掲載していません。
+各クライアントが投稿に画像/メディアを添付する際、どのメディアサーバー（アップロード先プロバイダ）へアップロードするかを調査しました。
 
 *最終更新: 2026-07-03*
-
-- ✅（プロトコル列）= その方式でのアップロードに対応。✅（プロバイダ列）= そのプロバイダを組み込みの選択肢として同梱。
-- 「その他」= NIP-96/Blossom 以外の方式。ぬるぬる・noStrudel は nostr.build 独自 API (`/api/v2/upload/files`)、Yakihonne は独自 S3 (`/api/v1/file-upload`、特殊値選択時)、Amethyst は NIP-95（イベント内 blob 埋め込み）、flowgazer は外部アプリ ehagaki への委譲。
-- 「プロバイダ」は運営者単位で集計（`nostr.build` は Blossom の `blossom.nostr.build` を、`nostrcheck.me` は `cdn.nostrcheck.me` を、`yabu.me` は `share.yabu.me` を、`sovbit` は `files.sovbit.host`/`cdn.sovbit.host` を含む。`primal`=blossom.primal.net、`satellite`=cdn.satellite.earth、`nostpic`=nostpic.com、`nostrmedia`=nostrmedia.com、`yakihonne`=blossom.yakihonne.com）。
-- 多くのクライアントは任意の NIP-96/Blossom サーバー URL の追加や、kind:10063(Blossom)/kind:10096(NIP-96) のサーバーリスト連携にも対応する（詳細は各エビデンス参照）。
 
 <table>
 <thead>
@@ -140,6 +139,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 <tr><td><a href="evidences/image-upload/amethyst.md">Amethyst</a> ※2</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td></tr>
 <tr><td><a href="evidences/image-upload/damus.md">Damus</a></td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td><a href="evidences/image-upload/algia.md">algia</a> ※4</td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><a href="evidences/image-upload/nostrism.md">Nostrism</a> ※5</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td align="center">✅</td><td></td><td></td><td align="center">✅</td><td></td><td></td><td></td><td align="center">✅</td><td></td><td align="center">✅</td><td></td></tr>
 </tbody>
 </table>
 
@@ -147,6 +147,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 ※2 Amethyst: 上記プロバイダに加え `24242.io` と `blossom.azzamo.media` も同梱（Blossom 計10サーバー）。
 ※3 flowgazer: 画像投稿は外部アプリ ehagaki (`lokuyow.github.io/ehagaki`) に委譲するため、同梱プロバイダを持たない。
 ※4 algia: CLI。同梱の既定は無く、`file-servers` 設定か `--server` 指定が必須。
+※5 Nostrism: 既定で有効なのは nostrcheck.me と nostr.build の2件。nostpic.com / nostrmedia.com / files.sovbit.host は設定画面のワンタップ候補（プリセット）。
 
 # フレームワーク
 各クライアントの実装に使用されているフレームワーク・ライブラリを調査しました。
@@ -171,6 +172,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 | Damus | Swift + C (iOS/macOS) | SwiftUI | 自前実装 (RelayPool / NostrNetworkManager) + nostrdb (Cベースのローカルイベントストア/全文検索) | nostr-sdk-swift (rust-nostr), negentropy-swift (リレー同期), secp256k1.swift, CryptoSwift, Kingfisher, swift-markdown-ui, GSPlayer, SwiftSoup, swift-collections, sentry-cocoa |
 | algia | Go (go 1.24.1) | CLI (urfave/cli v2)。MCP サーバーモード(mark3labs/mcp-go)も搭載 | nbd-wtf/go-nostr v0.52.3 (sdk/pool 含む) | fatih/color, mattn/go-colorable/go-isatty, mdp/qrterminal (QR表示), mark3labs/mcp-go (MCP) |
 | kakoi | C# (.NET 8 / net8.0-windows7.0) | Windows Forms (WinForms) + WebView2 | NNostr.Client (リポジトリ内に同梱・改変版) | Google_GenerativeAI (Gemini), Microsoft.Web.WebView2, NTextCat (言語判定), SkiaSharp, Svg.Skia, CredentialManagement, SSTPLib (伺か SSTP 連携) |
+| Nostrism | Kotlin (Kotlin Multiplatform) | Compose Multiplatform 1.11 (Material3 + material-icons-extended, Android/iOS/iPad + Desktop 対応の Deck 型 UI) | 自前実装（`:nostr-core` プロトコル層 + `nostr/` リレープール(Ktor WebSocket)、`crypto/Nip01`・`Nip19` 自作、EC は secp256k1-kmp） | SQLDelight (SSOT DB, cache-first, マイグレーション), Ktor client (okhttp/darwin/cio), Coil3 (画像 + coil-gif), kotlinx.coroutines/Flow, kotlinx.serialization, kotlincrypto sha2, multiplatform-settings, androidx.media3 (動画), androidx.credentials (Nosskey/passkey), Android Keystore + NIP-46/NIP-55 署名 |
 
 # 調査済みクライアント一覧
 - web:
@@ -189,6 +191,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
 - mobile:
   - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst)
   - [Damus](https://damus.io/)
+  - [Nostrism](https://github.com/ShinoharaTa/nostr-andloid-native-client) (Kotlin Multiplatform / Android・iOS・iPad + Desktop、Deck 型)
 - cli:
   - [algia](https://github.com/mattn/algia)
 - desktop:
@@ -212,6 +215,7 @@ nostr が購読するリレーの決め方は、kind:10002 を使うもの、out
   - Damus: https://github.com/damus-io/damus
   - algia: https://github.com/mattn/algia
   - kakoi: https://github.com/betonetojp/kakoi
+  - Nostrism: https://github.com/ShinoharaTa/nostr-andloid-native-client
 - NIPs
   - NIP-25 (Reactions): https://github.com/nostr-protocol/nips/blob/master/25.md
   - NIP-65 (Relay List Metadata): https://github.com/nostr-protocol/nips/blob/master/65.md
