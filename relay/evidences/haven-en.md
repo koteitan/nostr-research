@@ -34,12 +34,12 @@ privateRelay.QueryEvents = append(privateRelay.QueryEvents, privateDB.QueryEvent
 
 haven serves four relay types (Private/Chat/Inbox/Outbox) from a single binary, each with its own independent event-submission rate (`EventIPRateLimiter`) and connection rate (`ConnectionRateLimiter`). These rates limit request frequency and do not apply to the result size returned by a single request. Max subscriptions and filter/REQ rate are not separately configured on the haven side and inherit Khatru's behavior. They use a token-bucket scheme that refills `tokens` tokens every `interval` (minutes), capped at `maxTokens`. The connection-rate `maxTokens` is 9 for all types.
 
-| Relay Type | Max Subscriptions | Event Submission Rate | Filter/REQ Rate | Connection Rate | Notes |
-|------------|-------------------|----------------------|-----------------|-----------------|-------|
-| Private | Inherited from Khatru | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L61) (max 100 tokens) | Inherited from Khatru | [3 conn/5min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L66) (max 9 tokens) | Authentication + whitelist required relay |
-| Chat | Inherited from Khatru | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L72) (max 100 tokens) | Inherited from Khatru | [3 conn/3min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L77) (max 9 tokens) | Chat for users within the WoT |
-| Inbox | Inherited from Khatru | [10 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L83) (max 20 tokens) | Inherited from Khatru | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L88) (max 9 tokens) | Inbox relay |
-| Outbox | Inherited from Khatru | [10 events/60min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L94) (max 100 tokens) | Inherited from Khatru | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L99) (max 9 tokens) | For public message/media delivery |
+| Relay Type | Max Subscriptions | Event Submission Rate | Filter/REQ Rate | Connection Rate | Notes | Source |
+|------------|-------------------|----------------------|-----------------|-----------------|-------|--------|
+| Private | Inherited from Khatru | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L61) (max 100 tokens) | Inherited from Khatru | [3 conn/5min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L66) (max 9 tokens) | Authentication + whitelist required relay | limits.go |
+| Chat | Inherited from Khatru | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L72) (max 100 tokens) | Inherited from Khatru | [3 conn/3min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L77) (max 9 tokens) | Chat for users within the WoT | limits.go |
+| Inbox | Inherited from Khatru | [10 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L83) (max 20 tokens) | Inherited from Khatru | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L88) (max 9 tokens) | Inbox relay | limits.go |
+| Outbox | Inherited from Khatru | [10 events/60min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L94) (max 100 tokens) | Inherited from Khatru | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L99) (max 9 tokens) | For public message/media delivery | limits.go |
 
 **Notes**: Max subscriptions and filter/REQ rate are not separately configured and inherit Khatru's behavior
 

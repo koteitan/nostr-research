@@ -105,5 +105,9 @@ MAX_AGE_DAYS=365
 - NIP-1, 9, 11, 45
 - khatru が DeleteEvent 設定で NIP-9、Count 設定で NIP-45 を NIP-11 応答に自動追加。基盤プロトコルとして NIP-1 / NIP-11 をサポート。Negentropy 無効のため NIP-77 は非対応。
 
+## 警告
+
+レート制限はリクエストのレートに適用され、結果サイズには適用されない。limit を指定しない単一リクエストでも maxQueryLimit の 500 イベントまで返される (Negentropy セッションのみ 10,000 だが、ここでは有効化されていない)。
+
 ---
 [<< back](../README-ja.md)

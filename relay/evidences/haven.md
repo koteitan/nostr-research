@@ -16,9 +16,9 @@
 **設定パラメータ**: 未設定
 
 **動作**:
-- Khatruフレームワークから動作を継承
-- 各リレー(Private/Chat/Inbox/Outbox)のQueryEventsは `eventstore` ライブラリ(github.com/fiatjaf/eventstore v0.17.5)のQueryEventsをそのまま登録
-- `limit` 未指定時: **データベースから全てのマッチするイベントを返す**
+- haven自体は `limit` パラメータの独自デフォルト上限を定義していない
+- 各リレー(Private/Chat/Inbox/Outbox)のQueryEventsは `eventstore` ライブラリ(github.com/fiatjaf/eventstore v0.17.5)のQueryEventsをそのまま登録し、Khatruフレームワークの動作を継承
+- `limit` 未指定時: **データベースから全てのマッチするイベントを返す可能性がある**
 - **結果サイズのハード制限なし** - 大規模データセットでは潜在的に高負荷
 
 **ソースコードの証拠**:
@@ -32,14 +32,16 @@ privateRelay.QueryEvents = append(privateRelay.QueryEvents, privateDB.QueryEvent
 
 ### リレータイプごとのレート制限
 
-| リレータイプ | イベント送信レート | 接続レート | ソース |
-|------------|-------------------|------------|--------|
-| Private | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L61) (max 100 tokens) | [3 conn/5min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L66) (max 9 tokens) | limits.go |
-| Chat | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L72) (max 100 tokens) | [3 conn/3min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L77) (max 9 tokens) | limits.go |
-| Inbox | [10 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L83) (max 20 tokens) | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L88) (max 9 tokens) | limits.go |
-| Outbox | [10 events/60min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L94) (max 100 tokens) | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L99) (max 9 tokens) | limits.go |
+havenは4つのリレータイプ(Private/Chat/Inbox/Outbox)を単一バイナリで提供し、それぞれが独立したイベント送信レート(`EventIPRateLimiter`)と接続レート(`ConnectionRateLimiter`)を持つ。これらのレートはリクエスト頻度を制限するものであり、1リクエストが返す結果サイズには適用されない。最大サブスクリプション数とフィルター/REQレートはhaven側で個別に設定されておらず、Khatruの動作を継承する。トークンバケット方式で、interval(分)ごとにtokensトークンを補充し、上限はmaxTokens。接続レートのmaxTokensは全タイプで9。
 
-**備考**: 最大サブスクリプション数とフィルター/REQレートはhaven側で個別設定なし(khatru継承)。トークンバケット方式で、interval(分)ごとにtokensトークンを補充し、上限はmaxTokens。接続レートのmaxTokensは全タイプで9。レートはリクエスト頻度に対する制限であり、1リクエストが返す結果サイズには適用されない。
+| リレータイプ | 最大サブスクリプション数 | イベント送信レート | フィルター/REQレート | 接続レート | 備考 | ソース |
+|------------|----------------------|-------------------|--------------------|------------|------|--------|
+| Private | Khatru継承 | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L61) (max 100 tokens) | Khatru継承 | [3 conn/5min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L66) (max 9 tokens) | 認証 + ホワイトリスト必須リレー | limits.go |
+| Chat | Khatru継承 | [50 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L72) (max 100 tokens) | Khatru継承 | [3 conn/3min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L77) (max 9 tokens) | WoT内ユーザー向けチャット | limits.go |
+| Inbox | Khatru継承 | [10 events/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L83) (max 20 tokens) | Khatru継承 | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L88) (max 9 tokens) | インボックスリレー | limits.go |
+| Outbox | Khatru継承 | [10 events/60min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L94) (max 100 tokens) | Khatru継承 | [3 conn/min](https://github.com/bitvora/haven/blob/8d26f9e/limits.go#L99) (max 9 tokens) | 公開メッセージ/メディア配信用 | limits.go |
+
+**備考**: 最大サブスクリプション数とフィルター/REQレートはhaven側で個別設定なし(Khatru継承)。
 
 ## 時間ベースの制限
 
@@ -50,7 +52,7 @@ privateRelay.QueryEvents = append(privateRelay.QueryEvents, privateDB.QueryEvent
 | 最大未来オフセット | 強制なし (khatru継承) |
 | 最大過去オフセット | 強制なし (khatru継承) |
 
-**備考**: haven自体はcreated_atの未来/過去オフセット検証を実装しておらず、khatruの動作を継承するためデフォルトでは時刻検証は行われない
+**備考**: haven自体はcreated_atの未来/過去オフセット検証を実装しておらず、khatruの動作を継承するためデフォルトでは時刻検証は行われない。なお、これらは保存/配信ポリシーであり、インポート/WoTフェッチには独自の独立したタイムアウトがある(下記参照)。
 
 ### タイムアウト設定
 

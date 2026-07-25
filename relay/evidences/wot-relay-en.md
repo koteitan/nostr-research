@@ -100,6 +100,11 @@ MAX_AGE_DAYS=365
 - Optional archival sync from other relays (ARCHIVAL_SYNC), and whether reactions are archived (ARCHIVE_REACTIONS)
 - Optional age-based note deletion (kinds matching ARCHIVE_KINDS)
 
+## Supported NIPs
+
+- NIP-1, 9, 11, 45
+- Khatru automatically adds NIP-9 (via DeleteEvent config) and NIP-45 (via Count config) to the NIP-11 response. NIP-1 / NIP-11 are supported as the base protocol. NIP-77 is not supported because Negentropy is disabled.
+
 ## Warning
 
 Rate limits apply to request rate, not result size. A single request without `limit` still returns up to the maxQueryLimit of 500 events (10,000 only for Negentropy sessions, which are not enabled here).

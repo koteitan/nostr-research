@@ -37,6 +37,8 @@ MaxMessageSize: 512000,
 
 ### デフォルトレート制限 (`ApplySaneDefaults`経由)
 
+フレームワーク。デフォルトのレート制限は [`ApplySaneDefaults`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/sane_defaults.go#L9) を適用したときに有効になる。最大サブスクリプション数はフレームワークレベルでは強制されない。
+
 | 項目 | 値 | ソース |
 |------|-----|--------|
 | 最大サブスクリプション数 | 制限なし | - |
@@ -52,6 +54,9 @@ MaxMessageSize: 512000,
 |------|-----|
 | 最大未来オフセット | 強制なし |
 | 最大過去オフセット | 強制なし |
+| Ephemeral イベント経過時間 | - |
+| Ephemeral イベント寿命 | - |
+| 通常イベント最大経過時間 | - |
 
 **備考**: フレームワークはデフォルトでは `created_at` を検証しない。`policies` パッケージは [`PreventTimestampsInTheFuture`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L98) / [`PreventTimestampsInThePast`](https://github.com/fiatjaf/khatru/blob/9f99b98/policies/events.go#L88) ヘルパーを提供するが、`ApplySaneDefaults` では適用されない。イベント保存/削除ポリシーは実装依存。
 
